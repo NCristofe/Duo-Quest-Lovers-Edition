@@ -250,7 +250,70 @@ const GAMES = [
   { id: 'quiz',  title: 'Sintonia do Casal', sub: 'Quem é mais provável que...?', icon: 'message-circle-heart', tint: 'rgba(194,86,111,.25)', color: '#F7A8B8' },
   { id: 'heart', title: 'Heart Sync',        sub: 'Mantenham o coração no ritmo', icon: 'heart-pulse',          tint: 'rgba(139,30,63,.35)',  color: '#FF8FA3' },
   { id: 'ttt',   title: 'Jogo da Velha',     sub: 'Corações contra estrelas',     icon: 'grid-3x3',             tint: 'rgba(217,178,111,.2)', color: '#EBCB8B' },
-  { id: 'wheel', title: 'Roleta do Amor',    sub: 'Prêmios e prendas',            icon: 'disc-3',               tint: 'rgba(247,202,201,.16)', color: '#F7CAC9' }
+  { id: 'wheel', title: 'Roleta do Amor',    sub: 'Prêmios e prendas',            icon: 'disc-3',               tint: 'rgba(247,202,201,.16)', color: '#F7CAC9' },
+  { id: 'reflex', title: 'Reflexo Duplo',    sub: 'Quem toca primeiro?',          icon: 'zap',                  tint: 'rgba(217,178,111,.18)', color: '#EBCB8B' },
+  { id: 'know',   title: 'Quem Conhece Quem', sub: 'Adivinhe a resposta do par',  icon: 'eye',                  tint: 'rgba(194,86,111,.2)',  color: '#F7A8B8' },
+  { id: 'draw',   title: 'Desenhe e Adivinhe', sub: 'Um desenha, o outro chuta',  icon: 'pencil-line',          tint: 'rgba(247,202,201,.14)', color: '#F7CAC9' },
+  { id: 'tug',    title: 'Cabo de Guerra',   sub: 'Puxem para o seu lado',        icon: 'move-horizontal',      tint: 'rgba(139,30,63,.3)',   color: '#FF8FA3' },
+  { id: 'frase',  title: 'Batalha de Frases', sub: 'Completem e votem',           icon: 'pen-line',             tint: 'rgba(217,178,111,.2)', color: '#EBCB8B' },
+  { id: 'mime',   title: 'Mímica Romântica', sub: 'Atue e adivinhe',              icon: 'theater',              tint: 'rgba(194,86,111,.25)', color: '#F7A8B8' },
+  { id: 'cards',  title: 'Sorte ou Desafio', sub: 'Tire uma carta',               icon: 'layers',               tint: 'rgba(139,30,63,.35)',  color: '#FF8FA3' },
+  { id: 'mem',    title: 'Quem Erra Menos',  sub: 'Memória de palavras',          icon: 'brain',                tint: 'rgba(247,202,201,.14)', color: '#F7CAC9' },
+  { id: 'trip',   title: 'Viagem a Dois',    sub: 'Escolham o caminho',           icon: 'map',                  tint: 'rgba(217,178,111,.18)', color: '#EBCB8B' }
+];
+
+/* Conteúdo dos novos jogos */
+const KNOW = [
+  { q: 'Qual é a minha comida favorita?', o: ['Pizza', 'Sushi', 'Lasanha', 'Churrasco'] },
+  { q: 'Qual é o meu filme favorito?', o: ['Comédia', 'Romance', 'Terror', 'Ação'] },
+  { q: 'Qual é o meu lugar favorito para viajar?', o: ['Praia', 'Montanha', 'Cidade grande', 'Interior'] },
+  { q: 'Qual é a minha estação do ano favorita?', o: ['Verão', 'Outono', 'Inverno', 'Primavera'] },
+  { q: 'Qual é o meu hobby favorito?', o: ['Ler', 'Jogar', 'Cozinhar', 'Esportes'] },
+  { q: 'Qual é o meu doce preferido?', o: ['Chocolate', 'Brigadeiro', 'Sorvete', 'Bolo'] },
+  { q: 'Qual é o meu jeito ideal de passar o domingo?', o: ['Dormindo até tarde', 'Passeando', 'Em casa, vendo filme', 'Com os amigos'] },
+  { q: 'Qual é a minha bebida favorita?', o: ['Café', 'Suco', 'Vinho', 'Refrigerante'] }
+];
+const DRAW_WORDS = ['Pizza', 'Coração', 'Gato', 'Praia', 'Avião', 'Lua', 'Chuva', 'Bicicleta', 'Café', 'Montanha', 'Sorvete', 'Violão',
+  'Dragão', 'Girassol', 'Cinema', 'Foguete', 'Bolo', 'Guarda-chuva', 'Sofá', 'Estrela', 'Relógio', 'Abraço', 'Pipoca', 'Carro'];
+const TUG_TIME = 15;
+const FRASES = [
+  'O segredo para um café da manhã perfeito é...',
+  'Se a nossa história fosse um filme, o título seria...',
+  'Eu nunca vou admitir, mas adoro quando você...',
+  'O nosso super-poder como casal é...',
+  'Na próxima viagem, eu prometo que...',
+  'O pior presente que eu já ganhei foi...',
+  'Quando eu estiver velho(a), vou lembrar de...',
+  'Uma coisa que faz meu coração acelerar é...'
+];
+const MIME_WORDS = ['Pizza', 'Dormir', 'Dançar', 'Cozinhar', 'Andar de bicicleta', 'Pescar', 'Surfar', 'Tirar foto', 'Ler um livro',
+  'Cantar no chuveiro', 'Esquecer a chave', 'Fazer yoga', 'Lavar a louça', 'Filme de terror', 'Viajar de avião', 'Cafuné',
+  'Ronco', 'Pedir desculpas', 'Acordar cedo', 'Tocar violão'];
+const CARDS = [
+  'Faça uma pergunta que você nunca fez ao seu par.',
+  'Dê um abraço de 20 segundos sem falar nada.',
+  'Conte a sua lembrança favorita da infância.',
+  'Escolha a música que vocês vão dançar juntos por 1 minuto.',
+  'Sussurre no ouvido do outro o que mais gosta nele(a).',
+  'Imite o jeito que o outro fala por 15 segundos.',
+  'Faça um elogio que o outro nunca esperaria ouvir.',
+  'Diga algo romântico em voz de locutor de rádio.',
+  'Tire uma foto do casal agora, na pose mais engraçada.',
+  'Fique 30 segundos de olhos fechados e deixe o outro escolher o próximo passo.',
+  'Faça um cafuné de 1 minuto.',
+  'Conte algo que aprendeu sobre o outro recentemente.',
+  'Cante um refrão de qualquer música para o outro.',
+  'Escolha onde vocês vão jantar no próximo fim de semana.'
+];
+const MEM_WORDS = ['casa', 'praia', 'pizza', 'chuva', 'violão', 'elefante', 'foguete', 'jardim', 'bolo', 'lua', 'bicicleta', 'livro',
+  'café', 'montanha', 'cachorro', 'sorvete', 'janela', 'estrela', 'relógio', 'ponte', 'pipoca', 'tigre', 'mapa', 'flor', 'sapato',
+  'navio', 'espelho', 'vulcão'];
+const TRIP = [
+  { q: 'Onde vocês vão passar as férias?', o: ['Praia tropical', 'Montanha com neve', 'Cidade histórica'] },
+  { q: 'Como vão se locomover?', o: ['Carro alugado', 'Trem panorâmico', 'Passeio de balão'] },
+  { q: 'Qual será a primeira atividade?', o: ['Trilha ao amanhecer', 'Jantar romântico', 'Dia de spa'] },
+  { q: 'Caiu uma chuva forte! O que fazem?', o: ['Maratona de filmes no hotel', 'Explorar a cidade de guarda-chuva', 'Cozinhar juntos'] },
+  { q: 'No último dia, qual lembrança levar?', o: ['Uma foto', 'Um souvenir', 'Um bilhete escrito a dois'] }
 ];
 
 /* ======================================================================
@@ -363,7 +426,17 @@ function freshState() {
     quiz: { deck: [], i: -1, picks: [null, null], phase: 'pick', turn: 0, rounds: 0, matches: 0, last: null },
     hs: { phase: 'idle', x: .5, y: .75, vx: 0, vy: 0, zx: .5, zy: .5, prog: 0, t: 0, count: 3, inZone: false, plays: 0, wins: 0, best: 0 },
     ttt: { b: Array(9).fill(null), turn: 0, starter: 0, win: null, line: null, lastI: -1, score: [0, 0], draws: 0 },
-    wheel: { spinId: 0, doneId: 0, idx: null, target: 0, next: 0, history: [] }
+    wheel: { spinId: 0, doneId: 0, idx: null, target: 0, next: 0, history: [] },
+    reflex: { phase: 'idle', t: 0, delay: 0, goAt: 0, times: [null, null], win: null, early: null },
+    know: { deck: [], i: -1, reader: 0, phase: 'idle', pick: null, guess: null, score: [0, 0], rounds: 0 },
+    draw: { phase: 'idle', word: '', drawer: 0, strokes: [], ok: null, rounds: 0, score: [0, 0] },
+    tug: { phase: 'idle', pos: 50, t: 0, win: null },
+    frase: { phase: 'idle', prompt: '', texts: [null, null], votes: [null, null], rounds: 0 },
+    mime: { phase: 'idle', word: '', actor: 0, t: 0, ok: null, rounds: 0 },
+    cards: { phase: 'idle', deck: [], i: -1, turn: 0, card: null, swapped: false },
+    mem: { phase: 'idle', words: [], idx: 0, t: 0, ans: [null, null], score: [0, 0] },
+    trip: { phase: 'idle', i: 0, picks: [null, null], log: [] },
+    plays: {}
   };
 }
 let S = freshState();
@@ -374,7 +447,7 @@ const L = {
   n0: store.get('n0', ''), n1: store.get('n1', ''), myName: store.get('myName', ''), joinCode: '',
   net: 'idle', code: '',
   fxSeen: 0, spinSeen: 0, animDone: 0, anim: null, rot: 0, lastTickSeg: null,
-  hx: .5, hy: .75, zx: .5, zy: .5, ripples: [], lastCount: null
+  hx: .5, hy: .75, zx: .5, zy: .5, ripples: [], lastCount: null, draft: '', cur: null
 };
 let me = null; // null = mesmo aparelho; 0 = anfitrião; 1 = convidado(a)
 
@@ -474,6 +547,276 @@ const R = {
   }
 };
 
+/* ---------- Novos jogos: ações ---------- */
+function played(id) { S.plays[id] = (S.plays[id] || 0) + 1; }
+function rec(ok) { S.sync.max += 1; if (ok) S.sync.got += 1; }
+const normTxt = s => String(s ?? '').trim().toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
+function nextCard(c) {
+  if (!c.deck.length || c.i >= c.deck.length - 1) { c.deck = shuffle(CARDS.map((_, i) => i)); c.i = 0; } else c.i++;
+  return c.deck[c.i];
+}
+function reflexFinish() {
+  const r = S.reflex;
+  if (r.phase === 'done') return;
+  r.phase = 'done';
+  const [a, b] = r.times;
+  if (a == null && b == null) { r.win = null; S.msg = 'Ninguém tocou a tempo. Tentem de novo!'; rec(false); fx('draw'); }
+  else {
+    r.win = a == null ? 1 : b == null ? 0 : (a <= b ? 0 : 1);
+    S.points += 10; rec(true); fx('win');
+    S.msg = `${S.names[r.win]} foi mais rápido!`;
+  }
+  played('reflex');
+}
+function tugEnd(w) {
+  const g = S.tug;
+  if (g.phase === 'end') return;
+  g.phase = 'end';
+  g.win = w === undefined ? (g.pos < 50 ? 0 : g.pos > 50 ? 1 : null) : w;
+  played('tug');
+  if (g.win == null) { S.points += 5; rec(false); S.msg = 'Empate! Puxaram com a mesma força.'; fx('draw'); }
+  else { S.points += 15; rec(true); S.msg = `${S.names[g.win]} puxou mais forte!`; fx('win'); }
+}
+function mimeFail(txt) {
+  const m = S.mime;
+  m.phase = 'done'; m.ok = false; m.rounds++;
+  rec(false); played('mime'); fx('miss'); S.msg = txt;
+}
+
+Object.assign(R, {
+  reflexStart() {
+    Object.assign(S.reflex, { phase: 'wait', t: 0, delay: 2 + Math.random() * 3, goAt: 0, times: [null, null], win: null, early: null });
+    S.msg = null;
+  },
+  reflexTap(p, who) {
+    const r = S.reflex;
+    if (r.phase === 'wait') {
+      r.phase = 'done'; r.early = who; r.win = 1 - who;
+      S.msg = `${S.names[who]} tocou cedo demais! Ponto para ${S.names[1 - who]}.`;
+      S.points += 10; rec(true); played('reflex'); fx('miss');
+    } else if (r.phase === 'go' && r.times[who] == null) {
+      r.times[who] = Math.round(performance.now() - r.goAt);
+      fx('tap');
+      if (r.times[0] != null && r.times[1] != null) reflexFinish();
+    }
+  },
+
+  knowNew() {
+    const k = S.know;
+    if (!k.deck.length || k.i >= k.deck.length - 1) { k.deck = shuffle(KNOW.map((_, i) => i)); k.i = 0; } else k.i++;
+    Object.assign(k, { reader: k.rounds % 2, pick: null, guess: null, phase: 'pick' });
+    S.msg = null;
+  },
+  knowPick(p, who) {
+    const k = S.know;
+    if (k.phase !== 'pick' || who !== k.reader) return;
+    k.pick = p.v;
+    k.phase = S.mode === 'local' ? 'handoff' : 'guess';
+  },
+  knowReady() { if (S.know.phase === 'handoff') S.know.phase = 'guess'; },
+  knowGuess(p, who) {
+    const k = S.know;
+    if (k.phase !== 'guess' || who !== 1 - k.reader) return;
+    const ok = p.v === k.pick;
+    k.guess = p.v; k.phase = 'reveal'; k.rounds++;
+    if (ok) { k.score[1 - k.reader]++; S.points += 10; }
+    rec(ok); played('know');
+    S.msg = ok ? pick(MSG.match) : pick(MSG.miss);
+    fx(ok ? 'match' : 'miss');
+  },
+  knowNext() { R.knowNew(); },
+
+  drawNew() {
+    const d = S.draw;
+    Object.assign(d, { phase: 'draw', word: pick(DRAW_WORDS), drawer: d.rounds % 2, strokes: [], ok: null });
+    S.msg = null;
+  },
+  drawStroke(p, who) {
+    const d = S.draw;
+    if (d.phase !== 'draw' || who !== d.drawer || !Array.isArray(p.pts) || p.pts.length < 2) return;
+    d.strokes.push(p.pts.slice(0, 600));
+    if (d.strokes.length > 300) d.strokes.shift();
+  },
+  drawDone(p, who) { const d = S.draw; if (d.phase === 'draw' && who === d.drawer) d.phase = 'guess'; },
+  drawGuess(p, who) {
+    const d = S.draw;
+    if (d.phase !== 'guess' || who !== 1 - d.drawer) return;
+    d.ok = normTxt(p.text) === normTxt(d.word);
+    d.phase = 'reveal'; d.rounds++;
+    rec(d.ok); played('draw');
+    if (d.ok) { d.score[1 - d.drawer]++; S.points += 10; S.msg = `Acertou! A palavra era "${d.word}".`; fx('win'); }
+    else { S.msg = `Não foi dessa vez. A palavra era "${d.word}".`; fx('miss'); }
+  },
+  drawNext() { R.drawNew(); },
+
+  tugStart() { Object.assign(S.tug, { phase: 'play', pos: 50, t: 0, win: null }); S.msg = null; },
+  tugTap(p, who) {
+    const g = S.tug;
+    if (g.phase !== 'play') return;
+    g.pos = Math.max(0, Math.min(100, g.pos + (who === 1 ? 4 : -4)));
+    fx('tap');
+    if (g.pos <= 0) tugEnd(0); else if (g.pos >= 100) tugEnd(1);
+  },
+
+  fraseNew() {
+    Object.assign(S.frase, { phase: 'write', prompt: pick(FRASES), texts: [null, null], votes: [null, null] });
+    S.msg = null;
+  },
+  fraseWrite(p, who) {
+    const f = S.frase;
+    const t = String(p.text ?? '').trim().slice(0, 140);
+    if (f.phase !== 'write' || f.texts[who] != null || !t) return;
+    f.texts[who] = t;
+    if (f.texts[0] != null && f.texts[1] != null) f.phase = 'vote';
+  },
+  fraseVote(p, who) {
+    const f = S.frase;
+    if (f.phase !== 'vote' || f.votes[who] != null) return;
+    f.votes[who] = p.v;
+    if (f.votes[0] != null && f.votes[1] != null) {
+      const agree = f.votes[0] === f.votes[1];
+      f.phase = 'reveal'; f.rounds++;
+      rec(agree); played('frase');
+      S.points += agree ? 10 : 5;
+      S.msg = agree ? 'Mesma frase favorita! Combinaram de novo.' : 'Gostos diferentes... e é isso que torna o casal interessante.';
+      fx(agree ? 'match' : 'select');
+    }
+  },
+  fraseNext() { R.fraseNew(); },
+
+  mimeNew() {
+    const m = S.mime;
+    Object.assign(m, { phase: 'ready', word: pick(MIME_WORDS), actor: m.rounds % 2, t: 0, ok: null });
+    S.msg = null;
+  },
+  mimeStart(p, who) {
+    const m = S.mime;
+    if (m.phase === 'ready' && who === m.actor) { m.phase = 'play'; m.t = 0; }
+  },
+  mimeHit(p, who) {
+    const m = S.mime;
+    if (m.phase !== 'play' || who !== m.actor) return;
+    m.phase = 'done'; m.ok = true; m.rounds++;
+    S.points += 10; rec(true); played('mime');
+    S.msg = 'Acertou! Vocês são ótimos nisso.'; fx('win');
+  },
+  mimePass(p, who) { const m = S.mime; if (m.phase === 'play' && who === m.actor) mimeFail('Pulou! Vamos para a próxima.'); },
+  mimeNext() { R.mimeNew(); },
+
+  cardsNew() { Object.assign(S.cards, { phase: 'draw', deck: [], i: -1, card: null, swapped: false }); S.msg = null; },
+  cardDraw(p, who) {
+    const c = S.cards;
+    if (c.phase !== 'draw' || who !== c.turn) return;
+    c.card = nextCard(c); c.phase = 'act'; c.swapped = false;
+  },
+  cardDo(p, who) {
+    const c = S.cards;
+    if (c.phase !== 'act' || who !== c.turn) return;
+    S.points += 5; played('cards'); S.msg = pick(MSG.wheelDone); fx('match');
+    c.turn ^= 1; c.phase = 'draw'; c.card = null;
+  },
+  cardSwap(p, who) {
+    const c = S.cards;
+    if (c.phase !== 'act' || c.swapped || who !== c.turn) return;
+    c.card = nextCard(c); c.swapped = true;
+  },
+
+  memStart() {
+    Object.assign(S.mem, { phase: 'show', words: shuffle(MEM_WORDS).slice(0, 5), idx: 0, t: 0, ans: [null, null], score: [0, 0] });
+    S.msg = null;
+  },
+  memAnswer(p, who) {
+    const m = S.mem;
+    if (m.phase !== 'recall' || m.ans[who] != null) return;
+    m.ans[who] = String(p.text ?? '').split(/[,;\n]/).map(normTxt).filter(Boolean);
+    if (m.ans[0] == null || m.ans[1] == null) return;
+    const ws = m.words.map(normTxt);
+    m.score = m.ans.map(l => ws.filter(w => l.includes(w)).length);
+    const [a, b] = m.score;
+    m.phase = 'done'; S.points += 10; rec(a + b > 0); played('mem'); fx('match');
+    S.msg = a === b ? `Empate com ${a} palavra${a === 1 ? '' : 's'}! Memória de elefante a dois.` : `${S.names[a > b ? 0 : 1]} lembrou de mais palavras!`;
+  },
+  memNext() { R.memStart(); },
+
+  tripStart() { Object.assign(S.trip, { phase: 'pick', i: 0, picks: [null, null], log: [] }); S.msg = null; },
+  tripPick(p, who) {
+    const t = S.trip;
+    if (t.phase !== 'pick' || t.picks[who] != null) return;
+    t.picks[who] = p.v;
+    if (t.picks[0] == null || t.picks[1] == null) return;
+    const sc = TRIP[t.i], [a, b] = t.picks;
+    let txt;
+    if (a === b) { S.points += 5; rec(true); txt = `Vocês escolheram ${sc.o[a]}. No mesmo passo!`; }
+    else { const c = Math.random() < .5 ? a : b; S.points += 3; rec(false); txt = `Divergiram (${sc.o[a]} x ${sc.o[b]}). O destino escolheu: ${sc.o[c]}.`; }
+    t.log.push(txt); S.msg = txt; fx('select');
+    if (t.i + 1 >= TRIP.length) { t.phase = 'end'; played('trip'); }
+    else { t.i++; t.picks = [null, null]; }
+  }
+});
+
+function gameLive() {
+  return S.reflex.phase === 'wait' || S.reflex.phase === 'go' || S.tug.phase === 'play' ||
+    S.mime.phase === 'play' || S.mem.phase === 'show';
+}
+function tickGames(dt) {
+  const r = S.reflex;
+  if (r.phase === 'wait') { r.t += dt; if (r.t >= r.delay) { r.phase = 'go'; r.goAt = performance.now(); commit(); } }
+  else if (r.phase === 'go' && performance.now() - r.goAt > 2500) { reflexFinish(); commit(); }
+  const g = S.tug;
+  if (g.phase === 'play') { g.t += dt; if (g.t >= TUG_TIME) { tugEnd(); commit(); } }
+  const m = S.mime;
+  if (m.phase === 'play') { m.t += dt; if (m.t >= 60) { mimeFail('Tempo esgotado!'); commit(); } }
+  const mm = S.mem;
+  if (mm.phase === 'show') {
+    mm.t += dt;
+    if (mm.t >= 2) { mm.t = 0; mm.idx++; if (mm.idx >= mm.words.length) { mm.phase = 'recall'; commit(); } }
+  }
+}
+let gTimer = null, gFrame = 0;
+function ensureGTimer() {
+  if (gTimer) return;
+  let last = performance.now();
+  gTimer = setInterval(() => {
+    const now = performance.now();
+    const dt = Math.min(.1, (now - last) / 1000);
+    last = now;
+    tickGames(dt);
+    if (!gameLive()) { clearInterval(gTimer); gTimer = null; commit(); return; }
+    if (++gFrame % 15 === 0) commit();
+  }, 33);
+}
+
+function paintDraw() {
+  const cv = $('#drawCv');
+  if (!cv) return;
+  const dpr = Math.min(2, window.devicePixelRatio || 1);
+  const W = cv.clientWidth, H = cv.clientHeight;
+  if (!W || !H) return;
+  if (cv.width !== Math.round(W * dpr) || cv.height !== Math.round(H * dpr)) { cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr); }
+  const c = cv.getContext('2d');
+  c.setTransform(dpr, 0, 0, dpr, 0, 0);
+  c.clearRect(0, 0, W, H);
+  c.lineCap = 'round'; c.lineJoin = 'round'; c.lineWidth = 4; c.strokeStyle = '#F7CAC9';
+  for (const st of L.cur ? S.draw.strokes.concat([L.cur]) : S.draw.strokes) {
+    c.beginPath();
+    st.forEach((p, i) => (i ? c.lineTo(p[0] * W, p[1] * H) : c.moveTo(p[0] * W, p[1] * H)));
+    c.stroke();
+  }
+  if (cv.dataset.bound) return;
+  cv.dataset.bound = '1';
+  const pos = e => { const r = cv.getBoundingClientRect(); return [+((e.clientX - r.left) / r.width).toFixed(4), +((e.clientY - r.top) / r.height).toFixed(4)]; };
+  const canDraw = () => S.draw.phase === 'draw' && canAct(S.draw.drawer);
+  cv.addEventListener('pointerdown', e => { if (!canDraw()) return; cv.setPointerCapture(e.pointerId); L.cur = [pos(e)]; paintDraw(); });
+  cv.addEventListener('pointermove', e => { if (!L.cur) return; L.cur.push(pos(e)); paintDraw(); });
+  const up = () => {
+    if (!L.cur) return;
+    const pts = L.cur; L.cur = null;
+    if (pts.length > 1) act('drawStroke', { pts, who: S.draw.drawer }); else paintDraw();
+  };
+  cv.addEventListener('pointerup', up);
+  cv.addEventListener('pointercancel', up);
+}
+
 function quizNewQuestion() {
   const q = S.quiz;
   if (!q.deck.length || q.i >= q.deck.length - 1) { q.deck = shuffle(QUESTIONS.map((_, i) => i)); q.i = 0; }
@@ -504,6 +847,7 @@ function commit() {
   afterState();
   render();
   if (S.mode === 'p2p' && me === 0) send({ t: 'state', s: S });
+  if (!isGuest() && gameLive()) ensureGTimer();
 }
 // Efeitos derivados do estado: sons, partículas e animação da roleta
 function afterState() {
@@ -1013,7 +1357,7 @@ const VIEWS = {
             <span class="gicon" style="background:${g.tint};color:${g.color}"><i data-lucide="${g.icon}"></i></span>
             <span class="block font-display text-lg leading-tight mb-1">${g.title}</span>
             <span class="block text-xs muted leading-snug mb-3">${g.sub}</span>
-            <span class="block text-[11px] font-semibold" style="color:${g.color}">${stats[g.id]}</span>
+            <span class="block text-[11px] font-semibold" style="color:${g.color}">${stats[g.id] ?? ((S.plays[g.id] || 0) + ' partidas')}</span>
           </button>`).join('')}
       </div>
 
@@ -1223,9 +1567,230 @@ const VIEWS = {
   }
 };
 
+/* ---------- Novos jogos: telas ---------- */
+const canAct = seat => S.mode === 'local' || me === seat;
+const seatFor = turn => (S.mode === 'p2p' ? me : turn);
+const ptap = (type, p = {}) => `data-ptap="${type}" data-pp='${JSON.stringify(p)}'`;
+const wrap = (title, inner) => `<main class="screen">${hdr(title)}${inner}</main>`;
+const startBtn = (type, label = 'Começar') =>
+  `<div class="card p-6 text-center fade-up"><button ${ap(type)} class="btn btn-primary w-full text-lg">${label} <i data-lucide="play"></i></button></div>`;
+function pads(type, labels) {
+  if (S.mode === 'local') return `
+    <div class="tapzone left-0 w-1/2" ${ptap(type, { who: 0 })} style="border-right:1px dashed rgba(247,202,201,.15)"><span style="color:#F7A8B8">${labels[0]}</span></div>
+    <div class="tapzone right-0 w-1/2" ${ptap(type, { who: 1 })}><span style="color:#EBCB8B">${labels[1]}</span></div>`;
+  return `<div class="tapzone inset-x-0" ${ptap(type, { who: me })}><span style="color:${me === 0 ? '#F7A8B8' : '#EBCB8B'}">${labels[me]}</span></div>`;
+}
+
+Object.assign(VIEWS, {
+  reflex() {
+    const r = S.reflex;
+    if (r.phase === 'idle' || r.phase === 'done') {
+      const res = r.phase === 'done' ? `
+        <section class="card p-5 text-center fade-up mb-4">
+          <p class="font-display text-2xl mb-1">${r.win == null ? 'Sem vencedor' : esc(S.names[r.win]) + ' venceu!'}</p>
+          <p class="muted text-sm">${r.times.map((t, i) => `${esc(S.names[i])}: ${t == null ? '—' : t + ' ms'}`).join(' · ')}</p>${msgCard()}
+        </section>` : '';
+      return wrap('Reflexo Duplo', `${res}
+        <div class="card p-6 text-center">
+          <i data-lucide="zap" class="mx-auto mb-3" style="width:40px;height:40px;color:#EBCB8B"></i>
+          <p class="muted mb-5">Quando o sinal aparecer, toquem o mais rápido possível. Tocar antes do sinal entrega o ponto ao par.</p>
+          <button ${ap('reflexStart')} class="btn btn-primary w-full text-lg">${r.phase === 'done' ? 'Jogar de novo' : 'Começar'} <i data-lucide="play"></i></button>
+        </div>`);
+    }
+    const go = r.phase === 'go';
+    return wrap('Reflexo Duplo', `
+      <p class="text-center font-display text-4xl mb-4 ${go ? 'beat' : ''}" style="color:${go ? '#EBCB8B' : '#F7CAC9'}">${go ? 'TOQUE!' : 'Espere o sinal...'}</p>
+      <div class="arena" style="min-height:320px">${pads('reflexTap', [`Toque, ${esc(S.names[0])}`, `Toque, ${esc(S.names[1])}`])}</div>`);
+  },
+
+  know() {
+    const k = S.know;
+    if (k.phase === 'idle') return wrap('Quem Conhece Quem', startBtn('knowNew'));
+    const q = KNOW[k.deck[k.i]], rd = k.reader, gs = 1 - rd;
+    const head = `<section class="card p-5 mb-4 text-center">
+        <p class="eyebrow mb-2">${esc(S.names[rd])} responde sobre si mesmo(a)</p>
+        <h3 class="font-display text-2xl leading-snug">${esc(q.q)}</h3></section>`;
+    const opts = (type, who) => q.o.map((o, v) => `<button class="opt mb-3" ${ap(type, { v, who })}><span class="flex-1">${esc(o)}</span></button>`).join('');
+    let body;
+    if (k.phase === 'pick') body = canAct(rd) ? opts('knowPick', seatFor(rd)) : `<p class="muted text-center dots">Aguardando ${esc(S.names[rd])} escolher</p>`;
+    else if (k.phase === 'handoff') body = `<div class="card p-6 text-center fade-up">
+        <p class="font-display text-2xl mb-2">Passe o celular</p>
+        <p class="muted mb-5">${esc(S.names[gs])}, agora adivinhe a resposta de ${esc(S.names[rd])}.</p>
+        <button ${ap('knowReady')} class="btn btn-gold w-full">Pronto</button></div>`;
+    else if (k.phase === 'guess') body = canAct(gs)
+      ? `<p class="text-center text-sm mb-3 muted">${esc(S.names[gs])}, adivinhe a resposta de ${esc(S.names[rd])}:</p>` + opts('knowGuess', seatFor(gs))
+      : `<p class="muted text-center dots">Aguardando ${esc(S.names[gs])} adivinhar</p>`;
+    else body = `<div class="card p-5 fade-up">
+        <p class="text-sm muted mb-1">${esc(S.names[rd])} disse:</p><p class="font-semibold mb-3">${esc(q.o[k.pick])}</p>
+        <p class="text-sm muted mb-1">${esc(S.names[gs])} chutou:</p><p class="font-semibold">${esc(q.o[k.guess])}</p></div>
+        ${msgCard()}
+        <button ${ap('knowNext')} class="btn btn-primary w-full mt-5">Próxima pergunta <i data-lucide="arrow-right"></i></button>`;
+    return wrap('Quem Conhece Quem', head + body);
+  },
+
+  draw() {
+    const d = S.draw;
+    if (d.phase === 'idle') return wrap('Desenhe e Adivinhe', startBtn('drawNew'));
+    const dr = canAct(d.drawer), gs = canAct(1 - d.drawer);
+    let info = '', ctrl = '';
+    if (d.phase === 'draw') {
+      info = dr ? `Desenhe: <b style="color:#EBCB8B">${esc(d.word)}</b>` : `<span class="dots">${esc(S.names[d.drawer])} está desenhando</span>`;
+      if (dr) ctrl = `<button ${ap('drawDone', { who: seatFor(d.drawer) })} class="btn btn-gold w-full mt-3"><i data-lucide="check"></i>Terminei</button>`;
+    } else if (d.phase === 'guess') {
+      info = gs ? 'O que está sendo desenhado?' : `<span class="dots">${esc(S.names[1 - d.drawer])} está adivinhando</span>`;
+      if (gs) ctrl = `<div class="flex gap-2 mt-3">
+          <input class="field" data-bind="draft" value="${esc(L.draft)}" placeholder="Seu palpite" autocomplete="off" style="padding-left:1rem">
+          <button ${ap('drawGuess', { who: seatFor(1 - d.drawer) })} data-draft class="btn btn-gold px-5">Enviar</button></div>`;
+    } else {
+      info = d.ok ? 'Acertou!' : 'Não foi dessa vez';
+      ctrl = `${msgCard()}<button ${ap('drawNext')} class="btn btn-primary w-full mt-4">Próxima rodada <i data-lucide="arrow-right"></i></button>`;
+    }
+    return wrap('Desenhe e Adivinhe', `
+      <p class="text-center mb-3" style="color:#F7D7D6">${info}</p>
+      <div class="arena" style="min-height:300px;aspect-ratio:1/1;flex:none"><canvas id="drawCv" class="absolute inset-0 w-full h-full" style="touch-action:none"></canvas></div>
+      ${ctrl}`);
+  },
+
+  tug() {
+    const g = S.tug;
+    if (g.phase === 'idle') return wrap('Cabo de Guerra', startBtn('tugStart'));
+    const bar = `
+      <div class="relative h-7 rounded-full overflow-hidden mb-2" style="background:linear-gradient(90deg,#8B1E3F 0%,#8B1E3F ${100 - g.pos}%,#B8893F ${100 - g.pos}%,#B8893F 100%);box-shadow:inset 0 0 0 1px rgba(247,202,201,.15)">
+        <div class="absolute top-0 bottom-0 w-1 bg-white/80" style="left:${100 - g.pos}%"></div></div>
+      <div class="flex justify-between text-xs mb-4"><span style="color:#F7A8B8">${esc(S.names[0])}</span><span style="color:#EBCB8B">${esc(S.names[1])}</span></div>`;
+    const time = g.phase === 'play' ? `<p class="text-center text-sm muted mb-3">Tempo: ${Math.max(0, Math.ceil(TUG_TIME - g.t))}s</p>` : '';
+    const inner = g.phase === 'play'
+      ? `<div class="arena" style="min-height:300px">${pads('tugTap', [`← Puxe, ${esc(S.names[0])}`, `Puxe, ${esc(S.names[1])} →`])}</div>`
+      : `<div class="card p-5 text-center fade-up mb-4"><p class="font-display text-2xl">${g.win == null ? 'Empate!' : esc(S.names[g.win]) + ' venceu!'}</p>${msgCard()}</div>
+         <button ${ap('tugStart')} class="btn btn-primary w-full">Jogar de novo <i data-lucide="rotate-ccw"></i></button>`;
+    return wrap('Cabo de Guerra', bar + time + inner);
+  },
+
+  frase() {
+    const f = S.frase;
+    if (f.phase === 'idle') return wrap('Batalha de Frases', startBtn('fraseNew'));
+    const prompt = `<section class="card p-5 mb-4 text-center"><p class="eyebrow mb-2">Complete a frase</p><h3 class="font-display text-2xl leading-snug">${esc(f.prompt)}</h3></section>`;
+    let body;
+    if (f.phase === 'write') {
+      const w = S.mode === 'p2p' ? me : (f.texts[0] == null ? 0 : 1);
+      const can = S.mode === 'local' || f.texts[me] == null;
+      body = can
+        ? `<p class="text-center text-sm muted mb-2">${esc(S.names[w])}, escreva sua continuação</p>
+           <textarea class="field" data-bind="draft" rows="3" maxlength="140" placeholder="Sua continuação..." style="padding-left:1rem">${esc(L.draft)}</textarea>
+           <button ${ap('fraseWrite', { who: w })} data-draft class="btn btn-gold w-full mt-3">Enviar</button>`
+        : `<p class="muted text-center dots">Aguardando ${esc(partner())} escrever</p>`;
+    } else if (f.phase === 'vote') {
+      const v = S.mode === 'p2p' ? me : (f.votes[0] == null ? 0 : 1);
+      const can = S.mode === 'local' || f.votes[me] == null;
+      body = f.texts.map((t, i) => `<div class="card p-4 mb-3"><p class="eyebrow mb-1">Resposta ${'AB'[i]}</p><p class="mb-3">${esc(t)}</p>
+          ${can ? `<button ${ap('fraseVote', { v: i, who: v })} class="btn btn-ghost w-full">Esta é a melhor</button>` : ''}</div>`).join('')
+        + (can ? '' : `<p class="muted text-center dots">Aguardando ${esc(partner())} votar</p>`);
+    } else {
+      body = f.texts.map((t, i) => `<div class="card p-4 mb-3"><p class="eyebrow mb-1">${esc(S.names[i])} escreveu</p><p>${esc(t)}</p></div>`).join('')
+        + msgCard()
+        + `<button ${ap('fraseNext')} class="btn btn-primary w-full mt-4">Próxima frase <i data-lucide="arrow-right"></i></button>`;
+    }
+    return wrap('Batalha de Frases', prompt + body);
+  },
+
+  mime() {
+    const m = S.mime;
+    if (m.phase === 'idle') return wrap('Mímica Romântica', startBtn('mimeNew'));
+    const an = S.names[m.actor], ac = canAct(m.actor), sx = seatFor(m.actor);
+    let inner;
+    if (m.phase === 'ready') {
+      inner = ac
+        ? `<section class="card p-6 text-center"><p class="eyebrow mb-2">Só ${esc(an)} vê</p>
+           <p class="font-display text-4xl mb-4" style="color:#EBCB8B">${esc(m.word)}</p>
+           <p class="muted text-sm mb-5">Faça a mímica sem falar. Quando estiver pronto, comece o cronômetro.</p>
+           <button ${ap('mimeStart', { who: sx })} class="btn btn-primary w-full">Começar mímica <i data-lucide="play"></i></button></section>`
+        : `<section class="card p-6 text-center"><p class="dots">Aguardando ${esc(an)} se preparar</p></section>`;
+    } else if (m.phase === 'play') {
+      const showWord = S.mode === 'p2p' && me === m.actor;
+      inner = `<section class="card p-6 text-center"><p class="eyebrow mb-2">${esc(an)} está atuando</p>
+          ${showWord ? `<p class="font-display text-2xl mb-2" style="color:#EBCB8B">${esc(m.word)}</p>` : ''}
+          <p class="muted text-sm">Tempo: ${Math.max(0, Math.ceil(60 - m.t))}s</p></section>
+        ${ac
+          ? `<div class="grid grid-cols-2 gap-3 mt-4"><button ${ap('mimeHit', { who: sx })} class="btn btn-gold">Acertou!</button><button ${ap('mimePass', { who: sx })} class="btn btn-ghost">Pular</button></div>`
+          : '<p class="muted text-center text-sm mt-4">Quem adivinha, grita a resposta!</p>'}`;
+    } else {
+      inner = `<section class="card p-6 text-center fade-up"><p class="font-display text-2xl mb-1">${m.ok ? 'Acertou!' : 'Não foi dessa vez'}</p>
+          <p class="muted">A palavra era <b>${esc(m.word)}</b></p>${msgCard()}</section>
+        <button ${ap('mimeNext')} class="btn btn-primary w-full mt-4">Próxima palavra <i data-lucide="arrow-right"></i></button>`;
+    }
+    return wrap('Mímica Romântica', inner);
+  },
+
+  cards() {
+    const c = S.cards;
+    if (c.phase === 'idle') return wrap('Sorte ou Desafio', startBtn('cardsNew'));
+    const tn = S.names[c.turn], mine = canAct(c.turn), sx = seatFor(c.turn);
+    let inner;
+    if (c.phase === 'draw') {
+      inner = `<section class="card p-6 text-center">
+          <i data-lucide="layers" class="mx-auto mb-3" style="width:40px;height:40px;color:#EBCB8B"></i>
+          <p class="font-display text-2xl mb-4">Vez de ${esc(tn)}</p>
+          ${mine ? `<button ${ap('cardDraw', { who: sx })} class="btn btn-primary w-full">Tirar uma carta</button>` : '<p class="dots muted">Aguardando</p>'}</section>`;
+    } else {
+      inner = mine
+        ? `<section class="card p-6 text-center fade-up"><p class="eyebrow mb-3">Carta para ${esc(tn)}</p>
+           <p class="font-display text-2xl leading-snug mb-5">${esc(CARDS[c.card])}</p>
+           <button ${ap('cardDo', { who: sx })} class="btn btn-gold w-full mb-3"><i data-lucide="check"></i>Cumpri! +5</button>
+           ${c.swapped ? '' : `<button ${ap('cardSwap', { who: sx })} class="btn btn-ghost w-full"><i data-lucide="shuffle"></i>Trocar carta (uma vez)</button>`}</section>`
+        : `<section class="card p-6 text-center"><p class="dots muted">${esc(tn)} está com uma carta</p></section>`;
+    }
+    return wrap('Sorte ou Desafio', inner + msgCard());
+  },
+
+  mem() {
+    const m = S.mem;
+    if (m.phase === 'idle') return wrap('Quem Erra Menos', startBtn('memStart'));
+    let inner;
+    if (m.phase === 'show') {
+      inner = `<section class="card p-8 text-center fade-up"><p class="eyebrow mb-4">Memorize · ${m.idx + 1} de ${m.words.length}</p>
+        <p class="font-display text-5xl" style="color:#EBCB8B">${esc(m.words[m.idx] ?? '')}</p></section>`;
+    } else if (m.phase === 'recall') {
+      const w = S.mode === 'p2p' ? me : (m.ans[0] == null ? 0 : 1);
+      const can = S.mode === 'local' || m.ans[me] == null;
+      inner = `<section class="card p-5 mb-4 text-center"><p class="muted text-sm">Escreva as palavras que lembrar, separadas por vírgula.</p></section>`
+        + (can
+          ? `<p class="text-center text-sm mb-2">${esc(S.names[w])}, sua vez</p>
+             <textarea class="field" data-bind="draft" rows="3" placeholder="casa, praia, pizza..." style="padding-left:1rem">${esc(L.draft)}</textarea>
+             <button ${ap('memAnswer', { who: w })} data-draft class="btn btn-gold w-full mt-3">Enviar lembranças</button>`
+          : `<p class="muted text-center dots">Aguardando ${esc(partner())}</p>`);
+    } else {
+      inner = `<section class="card p-5 fade-up"><p class="font-display text-2xl text-center mb-3">${esc(S.names[0])} ${m.score[0]} × ${m.score[1]} ${esc(S.names[1])}</p>
+        <p class="muted text-sm text-center">Palavras: ${m.words.map(esc).join(', ')}</p>${msgCard()}</section>
+        <button ${ap('memStart')} class="btn btn-primary w-full mt-4">Jogar de novo <i data-lucide="rotate-ccw"></i></button>`;
+    }
+    return wrap('Quem Erra Menos', inner);
+  },
+
+  trip() {
+    const t = S.trip;
+    if (t.phase === 'idle') return wrap('Viagem a Dois', startBtn('tripStart'));
+    if (t.phase === 'end') return wrap('Viagem a Dois', `
+      <section class="card p-5 mb-4 fade-up"><p class="eyebrow mb-3">Sua viagem</p>
+        <ol class="space-y-2 text-sm pl-5" style="color:#F7D7D6;list-style:decimal">${t.log.map(l => `<li>${esc(l)}</li>`).join('')}</ol></section>
+      ${msgCard()}
+      <button ${ap('tripStart')} class="btn btn-primary w-full mt-4">Nova viagem <i data-lucide="rotate-ccw"></i></button>`);
+    const sc = TRIP[t.i];
+    const w = S.mode === 'p2p' ? me : (t.picks[0] == null ? 0 : 1);
+    const can = S.mode === 'local' || t.picks[me] == null;
+    return wrap('Viagem a Dois', `
+      <p class="eyebrow mb-2 text-center">Cena ${t.i + 1} de ${TRIP.length}</p>
+      <section class="card p-5 mb-4 text-center"><h3 class="font-display text-2xl leading-snug">${esc(sc.q)}</h3></section>
+      ${can
+        ? `<p class="text-center text-sm muted mb-3">Vez de ${esc(S.names[w])}</p>` + sc.o.map((o, v) => `<button class="opt mb-3" ${ap('tripPick', { v, who: w })}><span class="flex-1">${esc(o)}</span></button>`).join('')
+        : `<p class="muted text-center dots">Aguardando ${esc(partner())}</p>`}
+      ${msgCard()}`);
+  }
+});
+
 function render() {
   const v = VIEWS[S.screen] || VIEWS.welcome;
   $('#app').innerHTML = v();
+  paintDraw();
   if (window.lucide) lucide.createIcons({ attrs: { 'stroke-width': 2 } });
   document.body.classList.toggle('cozy', L.cozy);
 }
@@ -1282,7 +1847,14 @@ const UI = {
 document.addEventListener('pointerdown', e => {
   SND.init();
   const tz = e.target.closest('[data-tap]');
-  if (tz) { e.preventDefault(); onTap(+tz.dataset.tap, e); }
+  if (tz) { e.preventDefault(); onTap(+tz.dataset.tap, e); return; }
+  const pz = e.target.closest('[data-ptap]');
+  if (pz) {
+    e.preventDefault();
+    let p = {};
+    try { p = JSON.parse(pz.dataset.pp || '{}'); } catch {}
+    act(pz.dataset.ptap, p);
+  }
 }, { passive: false });
 
 document.addEventListener('click', e => {
@@ -1292,6 +1864,7 @@ document.addEventListener('click', e => {
   if (a && !a.disabled) {
     let p = {};
     try { p = JSON.parse(a.dataset.p || '{}'); } catch {}
+    if (a.dataset.draft !== undefined) { p.text = L.draft; L.draft = ''; }
     if (a.dataset.act !== 'quizPick' && a.dataset.act !== 'tttMove') SND.play('tap');
     act(a.dataset.act, p);
   }
