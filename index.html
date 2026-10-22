@@ -1,0 +1,1339 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
+<meta name="theme-color" content="#170816">
+<meta name="description" content="Duo Quest: Lovers' Edition — quatro mini-jogos para casais jogarem no mesmo celular ou em dois aparelhos.">
+<title>Duo Quest: Lovers' Edition</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E2%9D%A4%EF%B8%8F%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          wine: { 950: '#170816', 900: '#2D112B', 800: '#4A154B', 700: '#5E1F5C' },
+          quartz: '#F7CAC9',
+          ruby: '#8B1E3F',
+          gold: '#D9B26F'
+        },
+        fontFamily: {
+          display: ['Fraunces', 'serif'],
+          sans: ['"DM Sans"', 'system-ui', 'sans-serif']
+        }
+      }
+    }
+  };
+</script>
+<script src="https://unpkg.com/lucide@0.469.0/dist/umd/lucide.min.js"></script>
+<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+<style>
+  :root {
+    --wine-950: #170816; --wine-900: #2D112B; --wine-800: #4A154B;
+    --ruby: #8B1E3F; --quartz: #F7CAC9; --rose: #C2566F; --gold: #D9B26F;
+    --ink: #F8E9EC; --muted: rgba(248, 233, 236, .62);
+  }
+  html, body { height: 100%; background: var(--wine-950); color: var(--ink); }
+  body {
+    font-family: 'DM Sans', system-ui, sans-serif;
+    overscroll-behavior: none;
+    -webkit-tap-highlight-color: transparent;
+    -webkit-user-select: none; user-select: none;
+  }
+  input { -webkit-user-select: text; user-select: text; }
+  .font-display { font-family: 'Fraunces', serif; }
+
+  /* ---------- Ambient light ---------- */
+  #ambient { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+  #ambient .orb { position: absolute; border-radius: 50%; filter: blur(60px); opacity: .55; transition: background 1.2s, opacity 1.2s; }
+  #ambient .o1 { width: 70vmax; height: 70vmax; left: -25vmax; top: -30vmax; background: radial-gradient(circle, #4A154B 0%, transparent 70%); animation: drift 22s ease-in-out infinite alternate; }
+  #ambient .o2 { width: 60vmax; height: 60vmax; right: -25vmax; bottom: -25vmax; background: radial-gradient(circle, #6B1A33 0%, transparent 70%); animation: drift 28s ease-in-out infinite alternate-reverse; }
+  #ambient .o3 { width: 40vmax; height: 40vmax; left: 30%; top: 40%; background: radial-gradient(circle, rgba(217, 178, 111, .18) 0%, transparent 70%); opacity: 0; }
+  #vignette { position: fixed; inset: 0; z-index: 1; pointer-events: none; opacity: 0; transition: opacity 1.2s;
+    background: radial-gradient(ellipse at 50% 40%, transparent 45%, rgba(10, 2, 8, .75) 100%); }
+  #embers { position: fixed; inset: 0; z-index: 1; pointer-events: none; opacity: 0; transition: opacity 1.2s; }
+  #embers span { position: absolute; bottom: -20px; width: 6px; height: 6px; border-radius: 50%;
+    background: radial-gradient(circle, #FFD9A0, rgba(255, 170, 90, 0)); animation: ember linear infinite; }
+  body.cozy #ambient .o1 { background: radial-gradient(circle, #6A2340 0%, transparent 70%); }
+  body.cozy #ambient .o2 { background: radial-gradient(circle, #7A3A1E 0%, transparent 70%); opacity: .5; }
+  body.cozy #ambient .o3 { opacity: 1; animation: candle 3.2s ease-in-out infinite; }
+  body.cozy #vignette, body.cozy #embers { opacity: 1; }
+  body.cozy { --ink: #FBE7D8; }
+  @keyframes drift { to { transform: translate(8vmax, 6vmax) scale(1.08); } }
+  @keyframes candle { 0%, 100% { transform: scale(1); opacity: .9; } 30% { transform: scale(1.06); opacity: 1; } 55% { transform: scale(.97); opacity: .8; } 75% { transform: scale(1.03); opacity: .95; } }
+  @keyframes ember { 0% { transform: translate(0, 0); opacity: 0; } 10% { opacity: .9; } 100% { transform: translate(var(--dx), -105vh); opacity: 0; } }
+
+  #app { position: relative; z-index: 2; }
+  .screen { min-height: 100dvh; max-width: 30rem; margin: 0 auto;
+    padding: max(16px, env(safe-area-inset-top)) 16px max(20px, env(safe-area-inset-bottom)); }
+
+  /* ---------- Components ---------- */
+  .card { background: linear-gradient(160deg, rgba(255, 255, 255, .07), rgba(255, 255, 255, .025));
+    border: 1px solid rgba(247, 202, 201, .12); border-radius: 24px; backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
+  .eyebrow { font-size: 11px; letter-spacing: .18em; text-transform: uppercase; color: var(--gold); font-weight: 600; }
+  .muted { color: var(--muted); }
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: .5rem; border-radius: 999px;
+    font-weight: 600; padding: .9rem 1.4rem; transition: transform .12s, filter .2s, opacity .2s; }
+  .btn:active { transform: scale(.97); }
+  .btn:disabled { opacity: .45; pointer-events: none; }
+  .btn-primary { background: linear-gradient(135deg, #C2566F, #8B1E3F); color: #fff; box-shadow: 0 10px 30px -10px rgba(194, 86, 111, .7), inset 0 1px 0 rgba(255, 255, 255, .25); }
+  .btn-gold { background: linear-gradient(135deg, #EBCB8B, #B8893F); color: #2D112B; box-shadow: 0 10px 30px -12px rgba(217, 178, 111, .7), inset 0 1px 0 rgba(255, 255, 255, .4); }
+  .btn-ghost { background: rgba(255, 255, 255, .06); border: 1px solid rgba(247, 202, 201, .16); color: var(--ink); }
+  .icon-btn { width: 42px; height: 42px; border-radius: 14px; display: grid; place-items: center; flex: none;
+    background: rgba(255, 255, 255, .06); border: 1px solid rgba(247, 202, 201, .14); transition: transform .12s; }
+  .icon-btn:active { transform: scale(.92); }
+  .icon-btn svg, .btn svg { width: 20px; height: 20px; }
+  .field { width: 100%; background: rgba(0, 0, 0, .25); border: 1px solid rgba(247, 202, 201, .18); border-radius: 16px;
+    padding: .95rem 1rem .95rem 3rem; color: var(--ink); font-size: 16px; outline: none; transition: border-color .2s, box-shadow .2s; }
+  .field:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(217, 178, 111, .18); }
+  .field::placeholder { color: rgba(248, 233, 236, .35); }
+  .pill { display: inline-flex; align-items: center; gap: .35rem; padding: .35rem .7rem; border-radius: 999px;
+    background: rgba(217, 178, 111, .12); border: 1px solid rgba(217, 178, 111, .3); color: #F1D9A8; font-size: 12px; font-weight: 600; }
+  .pill svg { width: 14px; height: 14px; }
+  .game-card { text-align: left; padding: 1.1rem; border-radius: 22px; position: relative; overflow: hidden; transition: transform .15s; }
+  .game-card:active { transform: scale(.97); }
+  .game-card .gicon { width: 46px; height: 46px; border-radius: 15px; display: grid; place-items: center; margin-bottom: .9rem; }
+  .opt { width: 100%; display: flex; align-items: center; gap: .9rem; padding: 1rem 1.1rem; border-radius: 18px; text-align: left;
+    background: rgba(255, 255, 255, .05); border: 1px solid rgba(247, 202, 201, .14); font-weight: 600; transition: transform .12s, background .2s; }
+  .opt:active { transform: scale(.98); background: rgba(194, 86, 111, .25); }
+  .avatar { width: 40px; height: 40px; border-radius: 13px; display: grid; place-items: center; flex: none; }
+  .avatar svg { width: 20px; height: 20px; }
+  .av-a { background: rgba(194, 86, 111, .22); color: #F7A8B8; }
+  .av-b { background: rgba(217, 178, 111, .2); color: #EBCB8B; }
+  .av-ab { background: rgba(247, 202, 201, .15); color: var(--quartz); }
+
+  .meter { height: 10px; border-radius: 99px; background: rgba(255, 255, 255, .08); overflow: hidden; }
+  .meter > div { height: 100%; border-radius: 99px; background: linear-gradient(90deg, #8B1E3F, #C2566F, #EBCB8B); transition: width .8s cubic-bezier(.2, .8, .2, 1); }
+
+  .cell { aspect-ratio: 1; border-radius: 20px; display: grid; place-items: center; background: rgba(255, 255, 255, .05);
+    border: 1px solid rgba(247, 202, 201, .12); transition: background .2s, transform .12s; }
+  .cell:active { transform: scale(.95); }
+  .cell svg { width: 46%; height: 46%; }
+  .cell.win { background: rgba(217, 178, 111, .18); border-color: rgba(217, 178, 111, .6); box-shadow: 0 0 24px -6px rgba(217, 178, 111, .7); }
+  .pop { animation: pop .35s cubic-bezier(.3, 1.6, .5, 1); }
+  @keyframes pop { from { transform: scale(.2); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+  .fade-up { animation: fadeUp .45s cubic-bezier(.2, .8, .2, 1) both; }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+  .beat { animation: beat 1.4s ease-in-out infinite; }
+  @keyframes beat { 0%, 100% { transform: scale(1); } 15% { transform: scale(1.12); } 30% { transform: scale(1); } 45% { transform: scale(1.08); } }
+  .dots::after { content: ''; animation: dots 1.4s steps(4) infinite; }
+  @keyframes dots { 0% { content: ''; } 25% { content: '.'; } 50% { content: '..'; } 75% { content: '...'; } }
+
+  /* ---------- Wheel ---------- */
+  .wheel-wrap { position: relative; width: min(84vw, 340px); aspect-ratio: 1; margin: 0 auto; }
+  .wheel-wrap svg { width: 100%; height: 100%; filter: drop-shadow(0 20px 40px rgba(0, 0, 0, .45)); }
+  .wheel-pointer { position: absolute; left: 50%; top: -6px; transform: translateX(-50%); width: 0; height: 0; z-index: 3;
+    border-left: 15px solid transparent; border-right: 15px solid transparent; border-top: 28px solid var(--gold);
+    filter: drop-shadow(0 4px 6px rgba(0, 0, 0, .5)); }
+  .wheel-hub { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); width: 27%; aspect-ratio: 1; border-radius: 50%; z-index: 3;
+    background: radial-gradient(circle at 35% 30%, #F5DCA6, #B8893F 70%); color: #2D112B; font-weight: 700; font-size: 14px;
+    display: grid; place-items: center; box-shadow: 0 6px 20px rgba(0, 0, 0, .45), inset 0 2px 0 rgba(255, 255, 255, .5); transition: transform .12s; }
+  .wheel-hub:active { transform: translate(-50%, -50%) scale(.94); }
+  .wheel-hub:disabled { filter: saturate(.5) brightness(.85); }
+  .bulb { fill: #FBE7C2; }
+  .spinning .bulb { animation: bulb .25s steps(2) infinite; }
+  .spinning .bulb:nth-child(2n) { animation-delay: .125s; }
+  @keyframes bulb { 50% { fill: #8B5A2B; } }
+
+  /* ---------- Heart Sync ---------- */
+  .arena { position: relative; flex: 1; min-height: 300px; border-radius: 28px; overflow: hidden; touch-action: none;
+    background: radial-gradient(ellipse at 50% 30%, rgba(74, 21, 75, .65), rgba(23, 8, 22, .9)); border: 1px solid rgba(247, 202, 201, .12); }
+  .tapzone { position: absolute; top: 0; bottom: 0; display: flex; align-items: flex-end; justify-content: center; padding-bottom: 14px; touch-action: none; }
+  .tapzone span { font-size: 12px; font-weight: 600; padding: .35rem .75rem; border-radius: 99px; background: rgba(0, 0, 0, .35); pointer-events: none; }
+
+  /* ---------- Effects ---------- */
+  #fx { position: fixed; inset: 0; pointer-events: none; z-index: 50; overflow: hidden; }
+  .spark { position: absolute; left: 50%; top: 45%; font-size: 20px; animation: burst 1.3s cubic-bezier(.15, .7, .3, 1) forwards; }
+  @keyframes burst { 0% { transform: translate(-50%, -50%) scale(.3); opacity: 1; }
+    100% { transform: translate(calc(-50% + var(--x)), calc(-50% + var(--y))) scale(1) rotate(var(--r)); opacity: 0; } }
+  #toast { position: fixed; left: 50%; bottom: max(24px, env(safe-area-inset-bottom)); transform: translate(-50%, 140%); z-index: 60;
+    max-width: calc(100% - 32px); padding: .8rem 1.1rem; border-radius: 16px; background: rgba(45, 17, 43, .95);
+    border: 1px solid rgba(217, 178, 111, .35); font-size: 14px; font-weight: 500; transition: transform .35s cubic-bezier(.2, .8, .2, 1);
+    box-shadow: 0 20px 40px -10px rgba(0, 0, 0, .6); }
+  #toast.show { transform: translate(-50%, 0); }
+
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
+  }
+</style>
+</head>
+<body>
+<div id="ambient"><div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div></div>
+<div id="vignette"></div>
+<div id="embers"></div>
+<div id="app"></div>
+<div id="fx"></div>
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script>
+'use strict';
+
+/* ======================================================================
+   Conteúdo
+   ====================================================================== */
+const QUESTIONS = [
+  'Quem dorme mais rápido assistindo filme?',
+  'Quem é mais provável de esquecer onde guardou a chave?',
+  'Quem diz "eu te amo" primeiro depois de uma briga?',
+  'Quem é mais provável de chorar em um filme?',
+  'Quem rouba a coberta durante a noite?',
+  'Quem é mais provável de planejar uma surpresa?',
+  'Quem demora mais para se arrumar?',
+  'Quem come o último pedaço sem perguntar?',
+  'Quem é mais ciumento(a)?',
+  'Quem canta mais alto no chuveiro?',
+  'Quem é mais provável de se perder mesmo com GPS?',
+  'Quem lembra melhor das datas especiais?',
+  'Quem manda a primeira mensagem de bom dia?',
+  'Quem é mais provável de adotar um bichinho sem avisar?',
+  'Quem faz mais drama quando está gripado(a)?',
+  'Quem escolhe o filme e depois dorme no meio?',
+  'Quem passa mais tempo no celular antes de dormir?',
+  'Quem é mais provável de dançar no meio da cozinha?',
+  'Quem pede desculpas primeiro?',
+  'Quem é mais romântico(a) no dia a dia?',
+  'Quem ri da própria piada antes de terminar de contar?',
+  'Quem é mais provável de comprar algo por impulso?',
+  'Quem acorda de mau humor?',
+  'Quem é o(a) melhor cozinheiro(a) da casa?',
+  'Quem dá os melhores abraços?',
+  'Quem sempre diz "só mais um episódio"?',
+  'Quem se arrepende do pedido e acaba comendo do prato do outro?',
+  'Quem é mais provável de chorar no casamento dos amigos?',
+  'Quem fica mais bravo(a) quando está com fome?',
+  'Quem é mais provável de planejar a próxima viagem?',
+  'Quem guarda bilhetinhos e lembranças?',
+  'Quem é mais competitivo(a) em jogos?',
+  'Quem tira mais fotos do casal?',
+  'Quem é mais provável de cantar uma música romântica em público?',
+  'Quem se apaixonou primeiro?',
+  'Quem manda mais áudios longos?',
+  'Quem demora mais para responder mensagens?',
+  'Quem tem o sono mais pesado?',
+  'Quem faz as pazes com um beijo?',
+  'Quem é mais provável de dizer "não estou com fome" e depois pedir uma mordida?'
+];
+
+// {a} = quem recebe / cumpre, {b} = o par
+const PRENDAS = [
+  { short: 'Massagem',   type: 'premio', icon: 'hand-heart',            txt: '{b} faz uma massagem nas costas de {a} por 2 minutos.' },
+  { short: 'Cafuné',     type: 'premio', icon: 'sparkles',              txt: '{a} ganha 3 minutos de cafuné de {b}.' },
+  { short: 'Cardápio',   type: 'premio', icon: 'utensils',              txt: '{a} escolhe a próxima refeição — sem reclamações de {b}!' },
+  { short: 'Beijo',      type: 'premio', icon: 'heart',                 txt: '{a} ganha um beijo demorado, caprichado.' },
+  { short: 'Elogios',    type: 'premio', icon: 'message-circle-heart',  txt: '{b} faz 3 elogios sinceros para {a}, olhando nos olhos.' },
+  { short: 'Dança',      type: 'prenda', icon: 'music',                 txt: '{a} tira {b} para uma dança lenta. A música é escolha de {b}.' },
+  { short: 'Filme',      type: 'premio', icon: 'clapperboard',          txt: '{a} escolhe o próximo filme ou série da noite.' },
+  { short: 'Café',       type: 'prenda', icon: 'coffee',                txt: '{a} prepara um café da manhã especial para {b} amanhã.' },
+  { short: 'Lembrança',  type: 'prenda', icon: 'book-heart',            txt: '{a} conta sua lembrança favorita do casal, com todos os detalhes.' },
+  { short: 'Louça',      type: 'premio', icon: 'droplets',              txt: '{a} está livre da louça hoje: é com {b}!' },
+  { short: 'Declaração', type: 'prenda', icon: 'mic',                   txt: '{a} faz uma declaração de amor com voz de novela mexicana.' },
+  { short: 'Imitação',   type: 'prenda', icon: 'smile',                 txt: '{a} imita {b} por 30 segundos. {b} dá a nota de 0 a 10!' }
+];
+
+const MSG = {
+  match: ['Sintonia perfeita! Vocês combinam até no pensamento.', 'Mesma resposta! Já podem abrir uma agência de telepatia.',
+    'Combinaram! O cupido está orgulhoso.', 'Um só coração, uma só resposta.', 'Isso é que é conhecer o par de verdade!'],
+  miss: ['Opiniões diferentes... hora de cada um defender seu ponto.', 'Divergiram! Quem está certo? Expliquem-se.',
+    'Nem sempre pensamos igual — e isso é tempero.', 'Ops! Alguém aqui precisa prestar mais atenção.', 'Discordaram, mas com amor. Próxima!'],
+  hsWin: ['Corações em compasso! Vocês nasceram para jogar juntos.', '15 segundos de pura harmonia. Que dupla!', 'Batendo no mesmo ritmo. Lindo de ver!'],
+  hsLose: ['O coração escapou... mas vocês não. Tentem de novo!', 'Faltou ritmo, sobrou amor. Mais uma?', 'Quase! Combinem um compasso: um, dois, um, dois...'],
+  tttWin: ['{w} venceu! Pode cobrar um beijo de prêmio.', 'Vitória de {w}! {l}, a revanche está logo ali.', '{w} levou essa. Ninguém é perfeito, {l}.'],
+  tttDraw: ['Empate! Até no jogo da velha vocês estão em sintonia.', 'Deu velha! Ninguém perde quando o amor empata.'],
+  wheelDone: ['Prenda cumprida! Amor em dia.', 'Missão cumprida com carinho. +5 pontos!', 'Isso sim é dedicação.']
+};
+
+const GAMES = [
+  { id: 'quiz',  title: 'Sintonia do Casal', sub: 'Quem é mais provável que...?', icon: 'message-circle-heart', tint: 'rgba(194,86,111,.25)', color: '#F7A8B8' },
+  { id: 'heart', title: 'Heart Sync',        sub: 'Mantenham o coração no ritmo', icon: 'heart-pulse',          tint: 'rgba(139,30,63,.35)',  color: '#FF8FA3' },
+  { id: 'ttt',   title: 'Jogo da Velha',     sub: 'Corações contra estrelas',     icon: 'grid-3x3',             tint: 'rgba(217,178,111,.2)', color: '#EBCB8B' },
+  { id: 'wheel', title: 'Roleta do Amor',    sub: 'Prêmios e prendas',            icon: 'disc-3',               tint: 'rgba(247,202,201,.16)', color: '#F7CAC9' }
+];
+
+/* ======================================================================
+   Utilitários
+   ====================================================================== */
+const $ = s => document.querySelector(s);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const pick = arr => arr[Math.floor(Math.random() * arr.length)];
+const shuffle = arr => { const a = arr.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; };
+const store = {
+  get(k, d) { try { const v = localStorage.getItem('dq_' + k); return v == null ? d : JSON.parse(v); } catch { return d; } },
+  set(k, v) { try { localStorage.setItem('dq_' + k, JSON.stringify(v)); } catch {} }
+};
+// Atributos para ações sincronizadas
+const ap = (type, p = {}) => `data-act="${type}" data-p='${JSON.stringify(p)}'`;
+
+function toast(text, ms = 2800) {
+  const t = $('#toast');
+  t.textContent = text;
+  t.classList.add('show');
+  clearTimeout(toast._t);
+  toast._t = setTimeout(() => t.classList.remove('show'), ms);
+}
+
+function burst(chars = ['❤', '✦', '♥', '✧'], n = 22) {
+  const box = $('#fx');
+  for (let i = 0; i < n; i++) {
+    const s = document.createElement('span');
+    s.className = 'spark';
+    s.textContent = pick(chars);
+    const a = Math.random() * Math.PI * 2, d = 90 + Math.random() * 160;
+    s.style.setProperty('--x', Math.cos(a) * d + 'px');
+    s.style.setProperty('--y', Math.sin(a) * d + 'px');
+    s.style.setProperty('--r', (Math.random() * 120 - 60) + 'deg');
+    s.style.color = pick(['#F7CAC9', '#C2566F', '#EBCB8B', '#FF8FA3']);
+    s.style.fontSize = (14 + Math.random() * 16) + 'px';
+    box.appendChild(s);
+    setTimeout(() => s.remove(), 1400);
+  }
+}
+
+/* ======================================================================
+   Áudio (Web Audio API — sintetizado, sem arquivos)
+   ====================================================================== */
+const SND = {
+  ctx: null, master: null,
+  init() {
+    try {
+      if (!this.ctx) {
+        const C = window.AudioContext || window.webkitAudioContext;
+        if (!C) return;
+        this.ctx = new C();
+        this.master = this.ctx.createGain();
+        this.master.gain.value = 0.55;
+        const warm = this.ctx.createBiquadFilter();
+        warm.type = 'lowpass'; warm.frequency.value = 5200;
+        const comp = this.ctx.createDynamicsCompressor();
+        this.master.connect(warm); warm.connect(comp); comp.connect(this.ctx.destination);
+      }
+      if (this.ctx.state === 'suspended') this.ctx.resume();
+    } catch {}
+  },
+  tone(f, d, o = {}) {
+    if (!this.ctx || !L.sound) return;
+    const c = this.ctx, t = c.currentTime + (o.at || 0);
+    const osc = c.createOscillator(), g = c.createGain();
+    osc.type = o.type || 'sine';
+    osc.frequency.setValueAtTime(f, t);
+    if (o.to) osc.frequency.exponentialRampToValueAtTime(o.to, t + d);
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(o.vol ?? 0.2, t + (o.atk || 0.01));
+    g.gain.exponentialRampToValueAtTime(0.0001, t + d);
+    osc.connect(g); g.connect(this.master);
+    osc.start(t); osc.stop(t + d + 0.05);
+  },
+  play(name) {
+    const T = (...a) => this.tone(...a);
+    switch (name) {
+      case 'tap': T(520, .12, { type: 'triangle', vol: .12, to: 780 }); break;
+      case 'select': T(660, .1, { vol: .15 }); T(990, .2, { at: .06, vol: .1 }); break;
+      case 'match':
+        [523.25, 659.25, 783.99, 1046.5].forEach((f, i) => { T(f, .55, { at: i * .09, vol: .14 }); T(f * 2, .3, { at: i * .09, vol: .03, type: 'triangle' }); });
+        break;
+      case 'miss': T(392, .28, { type: 'triangle', vol: .14, to: 370 }); T(311, .45, { at: .2, type: 'triangle', vol: .12, to: 294 }); break;
+      case 'win':
+        [523.25, 659.25, 783.99, 1046.5, 1318.5].forEach((f, i) => T(f, .6, { at: i * .08, vol: .13 }));
+        [1567.98, 2093].forEach((f, i) => T(f, .9, { at: .45 + i * .12, vol: .05, type: 'triangle' }));
+        break;
+      case 'draw': [[392, 493.88], [440, 554.37]].forEach((ch, i) => ch.forEach(f => T(f, .55, { at: i * .24, vol: .1 }))); break;
+      case 'tick': T(1700, .035, { type: 'square', vol: .035 }); break;
+      case 'beat': T(110, .14, { vol: .5, to: 55 }); T(220, .08, { vol: .08 }); T(95, .16, { at: .15, vol: .35, to: 50 }); break;
+      case 'count': T(880, .14, { vol: .12 }); break;
+      case 'go': T(1320, .4, { vol: .14 }); T(660, .4, { vol: .08 }); break;
+      case 'spin': T(300, .5, { type: 'triangle', vol: .07, to: 900 }); break;
+      case 'join': [659.25, 880, 1318.5].forEach((f, i) => T(f, .5, { at: i * .1, vol: .12 })); break;
+    }
+  }
+};
+
+/* ======================================================================
+   Estado
+   S = estado do jogo (sincronizado entre aparelhos; o anfitrião é a autoridade)
+   L = estado local do aparelho (som, modo aconchego, animações, campos de texto)
+   ====================================================================== */
+function freshState() {
+  return {
+    screen: 'welcome', mode: null, names: ['', ''],
+    points: 0, sync: { got: 0, max: 0 },
+    fx: [], fxId: 0, msg: null,
+    quiz: { deck: [], i: -1, picks: [null, null], phase: 'pick', turn: 0, rounds: 0, matches: 0, last: null },
+    hs: { phase: 'idle', x: .5, y: .75, vx: 0, vy: 0, zx: .5, zy: .5, prog: 0, t: 0, count: 3, inZone: false, plays: 0, wins: 0, best: 0 },
+    ttt: { b: Array(9).fill(null), turn: 0, starter: 0, win: null, line: null, lastI: -1, score: [0, 0], draws: 0 },
+    wheel: { spinId: 0, doneId: 0, idx: null, target: 0, next: 0, history: [] }
+  };
+}
+let S = freshState();
+const hour = new Date().getHours();
+const L = {
+  sound: store.get('sound', true),
+  cozy: store.get('cozy', hour >= 19 || hour < 6),
+  n0: store.get('n0', ''), n1: store.get('n1', ''), myName: store.get('myName', ''), joinCode: '',
+  net: 'idle', code: '',
+  fxSeen: 0, spinSeen: 0, animDone: 0, anim: null, rot: 0, lastTickSeg: null,
+  hx: .5, hy: .75, zx: .5, zy: .5, ripples: [], lastCount: null
+};
+let me = null; // null = mesmo aparelho; 0 = anfitrião; 1 = convidado(a)
+
+const partner = () => S.names[me === 0 ? 1 : 0];
+const isGuest = () => S.mode === 'p2p' && me === 1;
+const syncPct = () => S.sync.max ? Math.round(S.sync.got / S.sync.max * 100) : null;
+function syncLabel(p) {
+  if (p == null) return 'Joguem para medir a sintonia';
+  if (p < 30) return 'Aquecendo os corações';
+  if (p < 60) return 'Em boa sintonia';
+  if (p < 85) return 'Quase telepatia';
+  return 'Almas gêmeas';
+}
+function fx(name) {
+  S.fxId++;
+  S.fx.push({ id: S.fxId, n: name });
+  if (S.fx.length > 6) S.fx.shift();
+}
+
+/* ======================================================================
+   Ações (rodam apenas no anfitrião ou no modo mesmo aparelho)
+   ====================================================================== */
+let wheelBusyUntil = 0;
+
+const R = {
+  go({ screen }) {
+    if (S.screen === 'heart' && screen !== 'heart' && (S.hs.phase === 'play' || S.hs.phase === 'count')) {
+      hsStopLoop(); S.hs.phase = 'idle';
+    }
+    S.screen = screen; S.msg = null;
+    if (screen === 'quiz' && S.quiz.i < 0) quizNewQuestion();
+  },
+
+  quizPick({ v }, who) {
+    const q = S.quiz;
+    if (q.phase !== 'pick' || q.picks[who] != null) return;
+    if (S.mode === 'local' && who !== q.turn) return;
+    q.picks[who] = v;
+    fx('select');
+    if (q.picks[0] != null && q.picks[1] != null) quizReveal();
+    else if (S.mode === 'local') q.phase = 'handoff';
+  },
+  quizReady() { const q = S.quiz; if (q.phase === 'handoff') { q.turn = 1; q.phase = 'pick'; } },
+  quizNext() { quizNewQuestion(); },
+
+  hsStart() {
+    const h = S.hs;
+    if (h.phase === 'play' || h.phase === 'count') return;
+    Object.assign(h, { phase: 'count', count: 3.2, x: .5, y: .75, vx: 0, vy: 0, zx: .5, zy: .5, prog: 0, t: 0, inZone: false });
+    S.msg = null;
+    hsStartLoop();
+  },
+
+  tttMove({ i }, who) {
+    const t = S.ttt;
+    if (t.win != null || t.b[i] != null) return;
+    if (S.mode === 'p2p' && who !== t.turn) return;
+    t.b[i] = t.turn; t.lastI = i;
+    const lines = [[0, 1, 2], [3, 4, 5], [6, 7, 8], [0, 3, 6], [1, 4, 7], [2, 5, 8], [0, 4, 8], [2, 4, 6]];
+    const line = lines.find(l => l.every(k => t.b[k] === t.turn));
+    if (line) {
+      t.win = t.turn; t.line = line; t.score[t.turn]++;
+      S.msg = pick(MSG.tttWin).replace(/\{w\}/g, S.names[t.turn]).replace(/\{l\}/g, S.names[1 - t.turn]);
+      fx('win');
+    } else if (t.b.every(c => c != null)) {
+      t.win = 'draw'; t.draws++; S.points += 5;
+      S.msg = pick(MSG.tttDraw);
+      fx('draw');
+    } else {
+      t.turn ^= 1;
+      fx('tap');
+    }
+  },
+  tttReset() {
+    const t = S.ttt;
+    t.b = Array(9).fill(null); t.starter ^= 1; t.turn = t.starter;
+    t.win = null; t.line = null; t.lastI = -1; S.msg = null;
+  },
+
+  wheelSpin() {
+    const w = S.wheel;
+    if (Date.now() < wheelBusyUntil) return;
+    wheelBusyUntil = Date.now() + 5600;
+    w.idx = Math.floor(Math.random() * PRENDAS.length);
+    w.target = w.next; w.next ^= 1; w.spinId++;
+    w.history.unshift({ i: w.idx, t: w.target });
+    w.history = w.history.slice(0, 6);
+    S.msg = null;
+    fx('spin');
+  },
+  wheelDone() {
+    const w = S.wheel;
+    if (!w.spinId || w.doneId === w.spinId) return;
+    w.doneId = w.spinId; S.points += 5;
+    S.msg = pick(MSG.wheelDone);
+    fx('match');
+  }
+};
+
+function quizNewQuestion() {
+  const q = S.quiz;
+  if (!q.deck.length || q.i >= q.deck.length - 1) { q.deck = shuffle(QUESTIONS.map((_, i) => i)); q.i = 0; }
+  else q.i++;
+  q.picks = [null, null]; q.phase = 'pick'; q.turn = 0; q.last = null; S.msg = null;
+}
+function quizReveal() {
+  const q = S.quiz;
+  q.phase = 'reveal'; q.rounds++;
+  const m = q.picks[0] === q.picks[1];
+  q.last = m; S.sync.max += 1;
+  if (m) { q.matches++; S.points += 10; S.sync.got += 1; fx('match'); } else fx('miss');
+  S.msg = pick(m ? MSG.match : MSG.miss);
+}
+
+/* ---------- Despacho ---------- */
+function act(type, p = {}) {
+  if (isGuest()) { send({ t: 'act', type, p }); return; }
+  apply(type, p, S.mode === 'p2p' ? me : (p.who ?? S.quiz.turn));
+}
+function apply(type, p, who) {
+  const fn = R[type];
+  if (!fn) return;
+  fn(p, who);
+  commit();
+}
+function commit() {
+  afterState();
+  render();
+  if (S.mode === 'p2p' && me === 0) send({ t: 'state', s: S });
+}
+// Efeitos derivados do estado: sons, partículas e animação da roleta
+function afterState() {
+  for (const f of S.fx) {
+    if (f.id <= L.fxSeen) continue;
+    L.fxSeen = f.id;
+    SND.play(f.n);
+    if (f.n === 'win' || (f.n === 'match' && S.screen === 'quiz')) burst();
+  }
+  if (S.wheel.spinId !== L.spinSeen) {
+    L.spinSeen = S.wheel.spinId;
+    startWheelAnim(S.wheel.idx, S.wheel.spinId);
+  }
+}
+
+/* ======================================================================
+   Heart Sync — física (anfitrião / mesmo aparelho)
+   ====================================================================== */
+const HS = { G: .62, DRAG: 1.25, TAP: .2, PUSH: .1, ZW: .16, ZH: .12, GOAL: 15, LIMIT: 45 };
+let hsLoop = null;
+
+function hsStartLoop() {
+  if (hsLoop) return;
+  let last = performance.now(), frame = 0;
+  hsLoop = setInterval(() => {
+    const now = performance.now();
+    const dt = Math.min(.05, (now - last) / 1000);
+    last = now;
+    hsStep(dt);
+    if (++frame % 3 === 0 && S.mode === 'p2p') send({ t: 'hs', hs: S.hs });
+  }, 1000 / 60);
+}
+function hsStopLoop() { clearInterval(hsLoop); hsLoop = null; }
+
+function hsStep(dt) {
+  const h = S.hs;
+  if (h.phase === 'count') {
+    h.count -= dt;
+    if (h.count <= 0) { h.phase = 'play'; h.t = 0; fx('go'); commit(); }
+    return;
+  }
+  if (h.phase !== 'play') return;
+  h.t += dt;
+  h.vy += HS.G * dt;
+  h.vy *= 1 - HS.DRAG * dt;
+  h.vx += Math.sin(h.t * .9) * .05 * dt;            // brisa suave
+  h.vx *= 1 - 1.6 * dt;
+  h.x += h.vx * dt; h.y += h.vy * dt;
+  if (h.y > .93) { h.y = .93; h.vy = -Math.abs(h.vy) * .3; }
+  if (h.y < .07) { h.y = .07; h.vy = Math.abs(h.vy) * .3; }
+  if (h.x < .07) { h.x = .07; h.vx = Math.abs(h.vx) * .5; }
+  if (h.x > .93) { h.x = .93; h.vx = -Math.abs(h.vx) * .5; }
+  h.zx = .5 + .2 * Math.sin(h.t * .31 + 1) - .2 * Math.sin(1);
+  h.zy = .5 + .18 * Math.sin(h.t * .47);
+  h.inZone = Math.abs(h.x - h.zx) < HS.ZW && Math.abs(h.y - h.zy) < HS.ZH;
+  h.prog = h.inZone ? h.prog + dt / HS.GOAL : Math.max(0, h.prog - dt / 40);
+  if (h.prog >= 1) hsEnd(true);
+  else if (h.t >= HS.LIMIT) hsEnd(false);
+}
+function hsTap(who) {
+  const h = S.hs;
+  if (h.phase !== 'play') return;
+  h.vy = Math.max(-1, h.vy - HS.TAP);
+  h.vx += who === 0 ? HS.PUSH : -HS.PUSH;
+}
+function hsEnd(win) {
+  const h = S.hs;
+  hsStopLoop();
+  h.phase = win ? 'win' : 'lose';
+  h.prog = Math.min(1, h.prog);
+  h.plays++; h.best = Math.max(h.best, Math.round(h.prog * 100));
+  S.sync.max += 1;
+  S.sync.got += win ? 1 : h.prog * .8;
+  if (win) { h.wins++; S.points += 20; }
+  S.msg = pick(win ? MSG.hsWin : MSG.hsLose);
+  fx(win ? 'win' : 'miss');
+  commit();
+}
+function onTap(who, e) {
+  SND.play('beat');
+  const arena = $('#hsArena');
+  if (arena) {
+    const r = arena.getBoundingClientRect();
+    L.ripples.push({ x: e.clientX - r.left, y: e.clientY - r.top, t: performance.now(), who });
+  }
+  if (navigator.vibrate) try { navigator.vibrate(12); } catch {}
+  if (isGuest()) send({ t: 'tap' });
+  else hsTap(S.mode === 'p2p' ? me : who);
+}
+
+/* ======================================================================
+   Desenho contínuo: Heart Sync (canvas) e Roleta (animação)
+   ====================================================================== */
+function heartPath(c, x, y, s) {
+  c.beginPath();
+  c.moveTo(x, y + s * .75);
+  c.bezierCurveTo(x - s * 1.25, y - s * .05, x - s * .62, y - s * 1.05, x, y - s * .38);
+  c.bezierCurveTo(x + s * .62, y - s * 1.05, x + s * 1.25, y - s * .05, x, y + s * .75);
+  c.closePath();
+}
+function roundRect(c, x, y, w, h, r) {
+  c.beginPath();
+  c.moveTo(x + r, y); c.arcTo(x + w, y, x + w, y + h, r); c.arcTo(x + w, y + h, x, y + h, r);
+  c.arcTo(x, y + h, x, y, r); c.arcTo(x, y, x + w, y, r); c.closePath();
+}
+
+function drawHS(now) {
+  const cv = $('#hsCanvas');
+  if (!cv) return;
+  const dpr = Math.min(2, window.devicePixelRatio || 1);
+  const W = cv.clientWidth, H = cv.clientHeight;
+  if (!W || !H) return;
+  if (cv.width !== Math.round(W * dpr) || cv.height !== Math.round(H * dpr)) { cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr); }
+  const c = cv.getContext('2d');
+  c.setTransform(dpr, 0, 0, dpr, 0, 0);
+  c.clearRect(0, 0, W, H);
+  const h = S.hs;
+
+  const k = isGuest() ? .35 : 1; // suaviza no convidado(a), que recebe ~20 atualizações/s
+  L.hx += (h.x - L.hx) * k; L.hy += (h.y - L.hy) * k;
+  L.zx += (h.zx - L.zx) * k; L.zy += (h.zy - L.zy) * k;
+
+  // estrelinhas de fundo
+  c.fillStyle = 'rgba(247,202,201,.18)';
+  for (let i = 0; i < 28; i++) {
+    const sx = (i * 97.3 % 100) / 100 * W, sy = (i * 53.7 % 100) / 100 * H;
+    const tw = .5 + .5 * Math.sin(now / 900 + i);
+    c.globalAlpha = .15 + tw * .35;
+    c.fillRect(sx, sy, 1.6, 1.6);
+  }
+  c.globalAlpha = 1;
+
+  // zona ideal
+  const zw = HS.ZW * 2 * W, zh = HS.ZH * 2 * H, zx = L.zx * W - zw / 2, zy = L.zy * H - zh / 2;
+  const active = h.phase === 'play' || h.phase === 'count';
+  if (active) {
+    c.save();
+    roundRect(c, zx, zy, zw, zh, 22);
+    c.fillStyle = h.inZone ? 'rgba(217,178,111,.2)' : 'rgba(247,202,201,.06)';
+    if (h.inZone) { c.shadowColor = 'rgba(217,178,111,.8)'; c.shadowBlur = 30; }
+    c.fill();
+    c.shadowBlur = 0;
+    c.setLineDash([8, 7]); c.lineDashOffset = -now / 40;
+    c.lineWidth = 2;
+    c.strokeStyle = h.inZone ? 'rgba(235,203,139,.95)' : 'rgba(247,202,201,.35)';
+    c.stroke();
+    c.restore();
+    c.fillStyle = h.inZone ? 'rgba(235,203,139,.9)' : 'rgba(247,202,201,.4)';
+    c.font = '600 11px "DM Sans", sans-serif'; c.textAlign = 'center';
+    c.fillText('ZONA DO AMOR', zx + zw / 2, zy + 18);
+  }
+
+  // ondas dos toques
+  L.ripples = L.ripples.filter(r => now - r.t < 600);
+  for (const r of L.ripples) {
+    const p = (now - r.t) / 600;
+    c.beginPath(); c.arc(r.x, r.y, 12 + p * 50, 0, Math.PI * 2);
+    c.strokeStyle = (r.who === 1 ? 'rgba(235,203,139,' : 'rgba(255,143,163,') + (1 - p) * .6 + ')';
+    c.lineWidth = 2; c.stroke();
+  }
+
+  // coração
+  const x = L.hx * W, y = L.hy * H, base = Math.min(W, H) * .075;
+  const pulse = 1 + .08 * Math.max(0, Math.sin(now / (h.inZone ? 140 : 260)));
+  const s = base * pulse;
+  c.save();
+  c.shadowColor = h.inZone ? 'rgba(255,170,120,.9)' : 'rgba(255,90,130,.6)';
+  c.shadowBlur = h.inZone ? 40 : 22;
+  const grad = c.createRadialGradient(x - s * .3, y - s * .4, s * .1, x, y, s * 1.3);
+  grad.addColorStop(0, '#FFC2CF'); grad.addColorStop(.5, '#E04A6E'); grad.addColorStop(1, '#8B1E3F');
+  heartPath(c, x, y, s);
+  c.fillStyle = grad; c.fill();
+  c.restore();
+  c.beginPath(); c.ellipse(x - s * .42, y - s * .45, s * .16, s * .1, -.6, 0, Math.PI * 2);
+  c.fillStyle = 'rgba(255,255,255,.55)'; c.fill();
+
+  // contagem regressiva
+  if (h.phase === 'count') {
+    const n = Math.max(1, Math.ceil(h.count));
+    if (n !== L.lastCount) { L.lastCount = n; SND.play('count'); }
+    c.fillStyle = 'rgba(23,8,22,.45)'; c.fillRect(0, 0, W, H);
+    c.fillStyle = '#EBCB8B'; c.textAlign = 'center'; c.textBaseline = 'middle';
+    c.font = `600 ${Math.min(W, H) * .3}px Fraunces, serif`;
+    c.fillText(n, W / 2, H / 2);
+    c.textBaseline = 'alphabetic';
+  } else L.lastCount = null;
+
+  // HUD
+  const bar = $('#hsBar'), time = $('#hsTime'), pct = $('#hsPct');
+  if (bar) bar.style.width = Math.min(100, h.prog * 100) + '%';
+  if (pct) pct.textContent = Math.floor(Math.min(1, h.prog) * HS.GOAL) + 's / ' + HS.GOAL + 's';
+  if (time) time.textContent = h.phase === 'play' ? Math.max(0, Math.ceil(HS.LIMIT - h.t)) + 's' : HS.LIMIT + 's';
+}
+
+function startWheelAnim(idx, id) {
+  if (idx == null) return;
+  const seg = 360 / PRENDAS.length;
+  const from = L.rot;
+  let to = from - (from % 360) + 360 * 6 + ((360 - idx * seg) % 360) + (Math.random() - .5) * seg * .6;
+  if (to - from < 360 * 5) to += 360;
+  L.anim = { from, to, start: performance.now(), dur: 5200, id };
+  const wrap = $('#wheelWrap');
+  if (wrap) { wrap.classList.add('spinning'); const hub = $('#wheelHub'); if (hub) hub.disabled = true; }
+}
+function stepWheel(now) {
+  const a = L.anim;
+  if (!a) return;
+  const p = Math.min(1, (now - a.start) / a.dur);
+  const e = 1 - Math.pow(1 - p, 4);
+  L.rot = a.from + (a.to - a.from) * e;
+  const g = $('#wheelG');
+  if (g) g.setAttribute('transform', `rotate(${L.rot})`);
+  const seg = 360 / PRENDAS.length;
+  const si = Math.floor((L.rot + seg / 2) / seg);
+  if (si !== L.lastTickSeg) { L.lastTickSeg = si; if (S.screen === 'wheel') SND.play('tick'); }
+  if (p >= 1) {
+    L.anim = null; L.animDone = a.id;
+    if (S.screen === 'wheel') { SND.play('match'); burst(['✦', '❤', '✧'], 14); }
+    render();
+  }
+}
+
+function loop(now) {
+  requestAnimationFrame(loop);
+  stepWheel(now);
+  if (S.screen === 'heart') drawHS(now);
+}
+
+/* ======================================================================
+   Multiplayer P2P (PeerJS / WebRTC)
+   ====================================================================== */
+const PREFIX = 'duoquest-lovers-v1-';
+const CODE_CHARS = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789';
+let peer = null, conn = null, joinTimer = null;
+
+function send(msg) { if (conn && conn.open) { try { conn.send(msg); } catch {} } }
+function genCode() { let s = ''; for (let i = 0; i < 4; i++) s += CODE_CHARS[Math.floor(Math.random() * CODE_CHARS.length)]; return s; }
+
+function netCleanup() {
+  clearTimeout(joinTimer);
+  try { conn && conn.close(); } catch {}
+  try { peer && peer.destroy(); } catch {}
+  conn = null; peer = null;
+}
+
+function hostRoom() {
+  if (typeof Peer === 'undefined') { toast('Não foi possível carregar o PeerJS. Verifique sua internet.'); return; }
+  netCleanup();
+  me = 0;
+  L.code = genCode(); L.net = 'creating'; render();
+  peer = new Peer(PREFIX + L.code, { debug: 0 });
+  peer.on('open', () => { L.net = 'hosting'; render(); });
+  peer.on('connection', c => {
+    if (conn && conn.open) { c.on('open', () => c.close()); return; }
+    setupConn(c);
+  });
+  peer.on('error', err => {
+    if (err.type === 'unavailable-id') { hostRoom(); return; }
+    L.net = 'idle'; render();
+    toast('Erro de conexão: ' + (err.type || 'desconhecido'));
+  });
+}
+
+function joinRoom(code) {
+  if (typeof Peer === 'undefined') { toast('Não foi possível carregar o PeerJS. Verifique sua internet.'); return; }
+  netCleanup();
+  me = 1;
+  L.net = 'joining'; render();
+  peer = new Peer({ debug: 0 });
+  peer.on('open', () => setupConn(peer.connect(PREFIX + code, { reliable: true, serialization: 'json' })));
+  peer.on('error', err => {
+    clearTimeout(joinTimer);
+    L.net = 'idle'; render();
+    toast(err.type === 'peer-unavailable' ? 'Sala não encontrada. Confira o código.' : 'Erro de conexão: ' + (err.type || 'desconhecido'));
+  });
+  joinTimer = setTimeout(() => {
+    if (!conn || !conn.open) { netCleanup(); L.net = 'idle'; render(); toast('Tempo esgotado. Tente novamente.'); }
+  }, 15000);
+}
+
+function setupConn(c) {
+  conn = c;
+  c.on('open', () => {
+    clearTimeout(joinTimer);
+    if (me === 1) send({ t: 'hello', name: L.myName.trim() || 'Amor' });
+  });
+  c.on('data', onData);
+  c.on('close', onDisconnect);
+  c.on('error', onDisconnect);
+}
+
+function onData(d) {
+  if (!d || typeof d !== 'object') return;
+  if (me === 0) {
+    if (d.t === 'hello') {
+      S = freshState();
+      S.mode = 'p2p';
+      S.names = [L.myName.trim() || 'Amor', String(d.name || 'Amor').slice(0, 20)];
+      S.screen = 'menu';
+      fx('join');
+      commit();
+      toast(`${S.names[1]} entrou na sala!`);
+    } else if (d.t === 'act' && R[d.type]) apply(d.type, d.p || {}, 1);
+    else if (d.t === 'tap') hsTap(1);
+  } else {
+    if (d.t === 'state') {
+      const first = S.mode !== 'p2p';
+      S = d.s;
+      if (first) {
+        L.fxSeen = S.fxId; L.spinSeen = S.wheel.spinId; L.animDone = S.wheel.spinId;
+        SND.play('join'); toast(`Conectado com ${S.names[0]}!`);
+      }
+      afterState();
+      render();
+    } else if (d.t === 'hs') Object.assign(S.hs, d.hs);
+  }
+}
+
+function onDisconnect() {
+  if (!conn) return;
+  const wasPlaying = S.mode === 'p2p';
+  hsStopLoop();
+  netCleanup();
+  L.net = 'idle';
+  if (wasPlaying) { S = freshState(); S.screen = 'p2p'; me = null; render(); toast('Conexão encerrada com seu par.'); }
+}
+
+/* ======================================================================
+   Interface
+   ====================================================================== */
+function toggles() {
+  return `
+    <button data-ui="cozy" class="icon-btn" aria-label="Modo aconchego" title="Modo aconchego">
+      <i data-lucide="${L.cozy ? 'flame' : 'moon'}" style="color:${L.cozy ? '#EBCB8B' : 'inherit'}"></i></button>
+    <button data-ui="sound" class="icon-btn" aria-label="Som" title="Som">
+      <i data-lucide="${L.sound ? 'volume-2' : 'volume-x'}"></i></button>`;
+}
+function syncPill() {
+  const p = syncPct();
+  return `<span class="pill" title="Sintonia do casal"><i data-lucide="heart" class="fill-current"></i>${p == null ? '--' : p}%</span>`;
+}
+function hdr(title) {
+  return `
+  <header class="flex items-center gap-2 mb-4">
+    <button ${ap('go', { screen: 'menu' })} class="icon-btn" aria-label="Voltar"><i data-lucide="arrow-left"></i></button>
+    <div class="flex-1 min-w-0 pl-1">
+      <p class="eyebrow">Duo Quest</p>
+      <h2 class="font-display text-xl leading-tight truncate">${title}</h2>
+    </div>
+    ${syncPill()}
+  </header>`;
+}
+function msgCard() {
+  return S.msg ? `<p class="fade-up text-center text-[15px] leading-relaxed mt-4 px-2" style="color:#F7D7D6">${esc(S.msg)}</p>` : '';
+}
+function avatar(v) {
+  const cls = ['av-a', 'av-b', 'av-ab'][v], icon = ['heart', 'star', 'heart-handshake'][v];
+  return `<span class="avatar ${cls}"><i data-lucide="${icon}" class="${v < 2 ? 'fill-current' : ''}"></i></span>`;
+}
+const optLabel = v => v === 2 ? 'Nós dois' : esc(S.names[v]);
+
+const VIEWS = {
+  welcome() {
+    return `
+    <main class="screen flex flex-col">
+      <div class="flex justify-end gap-2">${toggles()}</div>
+      <div class="flex-1 flex flex-col items-center justify-center text-center py-8">
+        <div class="beat mb-7 w-24 h-24 rounded-[32px] grid place-items-center"
+             style="background:linear-gradient(140deg,#C2566F,#4A154B);box-shadow:0 20px 60px -15px rgba(194,86,111,.8),inset 0 1px 0 rgba(255,255,255,.3)">
+          <i data-lucide="heart" class="fill-current" style="width:44px;height:44px;color:#FBE4E6"></i>
+        </div>
+        <p class="eyebrow mb-2">Lovers' Edition</p>
+        <h1 class="font-display text-[52px] leading-none mb-4">Duo <em style="color:var(--quartz)">Quest</em></h1>
+        <p class="muted max-w-xs leading-relaxed">Quatro jogos para rir, conversar e descobrir o quanto vocês estão em sintonia.</p>
+      </div>
+      <div class="space-y-3 fade-up">
+        <button data-ui="pickLocal" class="card w-full flex items-center gap-4 p-4 text-left">
+          <span class="avatar av-a" style="width:48px;height:48px"><i data-lucide="smartphone"></i></span>
+          <span class="flex-1"><span class="block font-semibold">Mesmo celular</span>
+          <span class="block text-sm muted">Joguem juntinhos no sofá</span></span>
+          <i data-lucide="chevron-right" class="muted"></i>
+        </button>
+        <button data-ui="pickP2P" class="card w-full flex items-center gap-4 p-4 text-left">
+          <span class="avatar av-b" style="width:48px;height:48px"><i data-lucide="wifi"></i></span>
+          <span class="flex-1"><span class="block font-semibold">Dois celulares</span>
+          <span class="block text-sm muted">Conectem com um código de sala</span></span>
+          <i data-lucide="chevron-right" class="muted"></i>
+        </button>
+      </div>
+    </main>`;
+  },
+
+  setup() {
+    return `
+    <main class="screen flex flex-col">
+      <header class="flex items-center gap-2 mb-6">
+        <button data-ui="home" class="icon-btn" aria-label="Voltar"><i data-lucide="arrow-left"></i></button>
+        <div class="flex-1"></div>${toggles()}
+      </header>
+      <p class="eyebrow mb-2">Mesmo celular</p>
+      <h2 class="font-display text-4xl leading-tight mb-2">Quem vai jogar hoje?</h2>
+      <p class="muted mb-8">Corações para um, estrelas para o outro.</p>
+      <div class="space-y-4">
+        <label class="relative block">
+          <i data-lucide="heart" class="fill-current absolute left-4 top-1/2 -translate-y-1/2" style="width:18px;color:#F7A8B8"></i>
+          <input class="field" data-bind="n0" maxlength="20" placeholder="Nome do Jogador 1" value="${esc(L.n0)}" autocomplete="off">
+        </label>
+        <label class="relative block">
+          <i data-lucide="star" class="fill-current absolute left-4 top-1/2 -translate-y-1/2" style="width:18px;color:#EBCB8B"></i>
+          <input class="field" data-bind="n1" maxlength="20" placeholder="Nome do Jogador 2" value="${esc(L.n1)}" autocomplete="off">
+        </label>
+      </div>
+      <div class="flex-1"></div>
+      <button data-ui="saveLocal" class="btn btn-primary w-full mt-8 text-lg">Começar <i data-lucide="sparkles"></i></button>
+    </main>`;
+  },
+
+  p2p() {
+    let body;
+    if (L.net === 'creating' || L.net === 'hosting') {
+      body = `
+      <div class="card p-6 text-center fade-up">
+        <p class="eyebrow mb-3">Código da sala</p>
+        <div class="font-display text-6xl tracking-[.25em] pl-[.25em] mb-4" style="color:#EBCB8B">${L.net === 'hosting' ? L.code : '····'}</div>
+        <button data-ui="copyCode" class="btn btn-ghost text-sm py-2 px-4" ${L.net === 'hosting' ? '' : 'disabled'}><i data-lucide="copy"></i>Copiar código</button>
+        <p class="muted mt-6 flex items-center justify-center gap-2"><i data-lucide="heart" class="beat fill-current" style="width:16px;color:#C2566F"></i>
+          <span class="dots">${L.net === 'hosting' ? 'Aguardando seu par' : 'Abrindo a sala'}</span></p>
+      </div>
+      <button data-ui="cancelNet" class="btn btn-ghost w-full mt-4">Cancelar</button>`;
+    } else if (L.net === 'joining') {
+      body = `
+      <div class="card p-8 text-center fade-up">
+        <i data-lucide="heart-handshake" class="beat mx-auto mb-4" style="width:44px;height:44px;color:#EBCB8B"></i>
+        <p class="font-semibold"><span class="dots">Conectando à sala ${esc(L.joinCode)}</span></p>
+      </div>
+      <button data-ui="cancelNet" class="btn btn-ghost w-full mt-4">Cancelar</button>`;
+    } else {
+      body = `
+      <label class="relative block mb-6">
+        <i data-lucide="user-round" class="absolute left-4 top-1/2 -translate-y-1/2 muted" style="width:18px"></i>
+        <input class="field" data-bind="myName" maxlength="20" placeholder="Seu nome" value="${esc(L.myName)}" autocomplete="off">
+      </label>
+      <button data-ui="host" class="btn btn-primary w-full text-lg"><i data-lucide="plus"></i>Criar sala</button>
+      <div class="flex items-center gap-3 my-6 muted text-sm"><span class="flex-1 h-px bg-white/10"></span>ou entre na sala do seu par<span class="flex-1 h-px bg-white/10"></span></div>
+      <div class="flex gap-2">
+        <label class="relative flex-1">
+          <i data-lucide="key-round" class="absolute left-4 top-1/2 -translate-y-1/2 muted" style="width:18px"></i>
+          <input class="field uppercase tracking-[.3em] font-semibold" data-bind="joinCode" maxlength="4" placeholder="CÓDIGO" value="${esc(L.joinCode)}" autocomplete="off" autocapitalize="characters">
+        </label>
+        <button data-ui="join" class="btn btn-gold px-5" aria-label="Entrar"><i data-lucide="log-in"></i></button>
+      </div>
+      <p class="text-xs muted mt-8 leading-relaxed flex gap-2"><i data-lucide="info" class="flex-none mt-0.5" style="width:14px"></i>
+        A conexão é direta entre os aparelhos (WebRTC). Só o "aperto de mão" inicial usa o servidor público do PeerJS — nenhum dado do jogo é salvo.</p>`;
+    }
+    return `
+    <main class="screen flex flex-col">
+      <header class="flex items-center gap-2 mb-6">
+        <button data-ui="home" class="icon-btn" aria-label="Voltar"><i data-lucide="arrow-left"></i></button>
+        <div class="flex-1"></div>${toggles()}
+      </header>
+      <p class="eyebrow mb-2">Dois celulares</p>
+      <h2 class="font-display text-4xl leading-tight mb-2">Conectem os corações</h2>
+      <p class="muted mb-8">Um cria a sala, o outro entra com o código.</p>
+      ${body}
+    </main>`;
+  },
+
+  menu() {
+    const p = syncPct();
+    const stats = {
+      quiz: S.quiz.rounds ? `${S.quiz.matches}/${S.quiz.rounds} combinações` : 'Novo',
+      heart: S.hs.plays ? `${S.hs.wins} de ${S.hs.plays} vitórias` : 'Novo',
+      ttt: (S.ttt.score[0] + S.ttt.score[1] + S.ttt.draws) ? `${S.ttt.score[0]} × ${S.ttt.score[1]}` : 'Novo',
+      wheel: S.wheel.spinId ? `${S.wheel.spinId} giros` : 'Novo'
+    };
+    const who = S.mode === 'p2p'
+      ? `<span class="pill" style="background:rgba(80,200,140,.12);border-color:rgba(80,200,140,.35);color:#9FE3BF"><i data-lucide="wifi"></i>Conectados</span>` : '';
+    return `
+    <main class="screen">
+      <header class="flex items-center gap-2 mb-6">
+        <div class="flex-1 min-w-0">
+          <p class="eyebrow">Duo Quest</p>
+          <h2 class="font-display text-2xl leading-tight truncate">${esc(S.names[0])} <span style="color:#C2566F">&</span> ${esc(S.names[1])}</h2>
+        </div>
+        ${toggles()}
+      </header>
+
+      <section class="card p-5 mb-5 fade-up">
+        <div class="flex items-start justify-between mb-4">
+          <div>
+            <p class="eyebrow mb-1">Placar de sintonia</p>
+            <p class="font-display text-5xl leading-none">${p == null ? '--' : p}<span class="text-2xl muted">%</span></p>
+            <p class="text-sm mt-2" style="color:#F7D7D6">${syncLabel(p)}</p>
+          </div>
+          <div class="text-right">
+            <p class="eyebrow mb-1">Pontos</p>
+            <p class="font-display text-3xl leading-none" style="color:#EBCB8B">${S.points}</p>
+            <div class="mt-3">${who}</div>
+          </div>
+        </div>
+        <div class="meter"><div style="width:${p ?? 0}%"></div></div>
+      </section>
+
+      <div class="grid grid-cols-2 gap-3">
+        ${GAMES.map((g, i) => `
+          <button ${ap('go', { screen: g.id })} class="card game-card fade-up" style="animation-delay:${60 + i * 60}ms">
+            <span class="gicon" style="background:${g.tint};color:${g.color}"><i data-lucide="${g.icon}"></i></span>
+            <span class="block font-display text-lg leading-tight mb-1">${g.title}</span>
+            <span class="block text-xs muted leading-snug mb-3">${g.sub}</span>
+            <span class="block text-[11px] font-semibold" style="color:${g.color}">${stats[g.id]}</span>
+          </button>`).join('')}
+      </div>
+
+      <button data-ui="leave" class="btn btn-ghost w-full mt-6 text-sm"><i data-lucide="log-out"></i>${S.mode === 'p2p' ? 'Sair da sala' : 'Trocar jogadores'}</button>
+    </main>`;
+  },
+
+  quiz() {
+    const q = S.quiz, text = QUESTIONS[q.deck[q.i]] || '';
+    let body = '';
+    const options = who => `
+      <div class="space-y-3 fade-up">
+        ${[0, 1, 2].map(v => `<button ${ap('quizPick', { v, who })} class="opt">${avatar(v)}<span class="flex-1">${optLabel(v)}</span></button>`).join('')}
+      </div>`;
+
+    if (q.phase === 'pick' && S.mode === 'local') {
+      body = `
+        <p class="text-center text-sm mb-4" style="color:#F7D7D6"><b>${esc(S.names[q.turn])}</b>, escolha em segredo.
+        ${esc(S.names[1 - q.turn])}, nada de espiar!</p>${options(q.turn)}`;
+    } else if (q.phase === 'handoff') {
+      body = `
+        <div class="card p-6 text-center fade-up">
+          <i data-lucide="repeat-2" class="mx-auto mb-3" style="width:40px;height:40px;color:#EBCB8B"></i>
+          <p class="font-display text-2xl mb-1">Passe o celular</p>
+          <p class="muted mb-5">para ${esc(S.names[1])} responder sem ver a resposta de ${esc(S.names[0])}.</p>
+          <button ${ap('quizReady')} class="btn btn-gold w-full">Pronto, sou ${esc(S.names[1])}</button>
+        </div>`;
+    } else if (q.phase === 'pick') {
+      const mine = q.picks[me], theirs = q.picks[1 - me];
+      body = mine == null
+        ? `<p class="text-center text-sm mb-4 muted">${theirs != null ? `${esc(partner())} já respondeu ✓` : 'Respondam ao mesmo tempo, cada um no seu celular.'}</p>${options(me)}`
+        : `<div class="card p-8 text-center fade-up">
+             <i data-lucide="hourglass" class="mx-auto mb-3" style="width:36px;height:36px;color:#EBCB8B"></i>
+             <p class="font-semibold"><span class="dots">Aguardando ${esc(partner())}</span></p>
+             <p class="text-sm muted mt-1">Você escolheu: ${optLabel(mine)}</p>
+           </div>`;
+    } else {
+      const m = q.last;
+      body = `
+        <div class="card p-5 fade-up">
+          <div class="text-center mb-5">
+            <span class="pill" style="${m ? '' : 'background:rgba(255,255,255,.06);border-color:rgba(255,255,255,.15);color:var(--ink)'}">
+              <i data-lucide="${m ? 'sparkles' : 'shuffle'}"></i>${m ? 'Combinaram! +10' : 'Divergiram'}</span>
+          </div>
+          <div class="grid grid-cols-2 gap-3">
+            ${[0, 1].map(p => `
+              <div class="text-center rounded-2xl p-3" style="background:rgba(0,0,0,.2)">
+                <p class="text-xs muted mb-2">${esc(S.names[p])} disse</p>
+                <div class="flex justify-center mb-2">${avatar(q.picks[p])}</div>
+                <p class="font-semibold text-sm">${optLabel(q.picks[p])}</p>
+              </div>`).join('')}
+          </div>
+        </div>
+        ${msgCard()}
+        <button ${ap('quizNext')} class="btn btn-primary w-full mt-5">Próxima pergunta <i data-lucide="arrow-right"></i></button>`;
+    }
+    return `
+    <main class="screen">
+      ${hdr('Sintonia do Casal')}
+      <div class="flex items-center justify-between text-xs muted mb-3 px-1">
+        <span>Pergunta ${q.rounds + (q.phase === 'reveal' ? 0 : 1)}</span>
+        <span>${q.matches}/${q.rounds} combinações</span>
+      </div>
+      <section class="card p-6 mb-5 text-center relative overflow-hidden">
+        <i data-lucide="quote" class="absolute -top-1 left-3 opacity-10" style="width:60px;height:60px"></i>
+        <p class="eyebrow mb-3">Quem é mais provável...</p>
+        <h3 class="font-display text-[26px] leading-snug">${esc(text)}</h3>
+      </section>
+      ${body}
+    </main>`;
+  },
+
+  heart() {
+    const h = S.hs, playing = h.phase === 'play' || h.phase === 'count';
+    let overlay = '';
+    if (!playing) {
+      const res = h.phase === 'win' || h.phase === 'lose';
+      overlay = `
+      <div class="absolute inset-0 grid place-items-center p-5" style="background:rgba(23,8,22,.55)">
+        <div class="text-center max-w-xs fade-up">
+          ${res ? `
+            <i data-lucide="${h.phase === 'win' ? 'trophy' : 'heart-crack'}" class="mx-auto mb-3" style="width:44px;height:44px;color:${h.phase === 'win' ? '#EBCB8B' : '#F7A8B8'}"></i>
+            <p class="font-display text-3xl mb-1">${h.phase === 'win' ? 'Em perfeita sintonia!' : 'O coração escapou'}</p>
+            <p class="muted text-sm mb-1">${Math.round(Math.min(1, h.prog) * 100)}% da meta</p>
+            ${msgCard()}` : `
+            <i data-lucide="heart-pulse" class="beat mx-auto mb-3" style="width:44px;height:44px;color:#FF8FA3"></i>
+            <p class="font-display text-3xl mb-3">Heart Sync</p>
+            <p class="text-sm leading-relaxed mb-1" style="color:#F7D7D6">Cada toque faz o coração subir e o empurra para o lado do par.</p>
+            <p class="text-sm muted leading-relaxed">Toquem juntos, no ritmo, para mantê-lo na <b style="color:#EBCB8B">zona do amor</b> por ${HS.GOAL} segundos.</p>`}
+          <button ${ap('hsStart')} class="btn btn-primary mt-6 px-8">${res ? 'Jogar de novo' : 'Começar'} <i data-lucide="play"></i></button>
+        </div>
+      </div>`;
+    }
+    let taps = '';
+    if (playing) {
+      taps = S.mode === 'local'
+        ? `<div class="tapzone left-0 w-1/2" data-tap="0" style="border-right:1px dashed rgba(247,202,201,.12)"><span style="color:#F7A8B8">♥ ${esc(S.names[0])}</span></div>
+           <div class="tapzone right-0 w-1/2" data-tap="1"><span style="color:#EBCB8B">★ ${esc(S.names[1])}</span></div>`
+        : `<div class="tapzone inset-x-0" data-tap="${me}"><span style="color:${me === 0 ? '#F7A8B8' : '#EBCB8B'}">Toque em qualquer lugar, ${esc(S.names[me])}</span></div>`;
+    }
+    return `
+    <main class="screen flex flex-col" style="height:100dvh;min-height:0">
+      ${hdr('Heart Sync')}
+      <div class="mb-3">
+        <div class="flex justify-between text-xs mb-1.5 px-1">
+          <span class="font-semibold" style="color:#EBCB8B">Sintonia <span id="hsPct"></span></span>
+          <span class="muted flex items-center gap-1"><i data-lucide="timer" style="width:13px"></i><span id="hsTime"></span></span>
+        </div>
+        <div class="meter"><div id="hsBar" style="width:0;transition:none"></div></div>
+      </div>
+      <div class="arena" id="hsArena">
+        <canvas id="hsCanvas" class="absolute inset-0 w-full h-full"></canvas>
+        ${taps}${overlay}
+      </div>
+      <div class="flex justify-around text-center text-xs muted pt-3">
+        <span>Partidas <b class="block text-base" style="color:var(--ink)">${h.plays}</b></span>
+        <span>Vitórias <b class="block text-base" style="color:var(--ink)">${h.wins}</b></span>
+        <span>Recorde <b class="block text-base" style="color:var(--ink)">${h.best}%</b></span>
+      </div>
+    </main>`;
+  },
+
+  ttt() {
+    const t = S.ttt;
+    const sym = (v, i) => v == null ? '' :
+      `<i data-lucide="${v === 0 ? 'heart' : 'star'}" class="fill-current ${i === t.lastI ? 'pop' : ''}" style="color:${v === 0 ? '#F07A97' : '#EBCB8B'}"></i>`;
+    const canPlay = t.win == null && (S.mode === 'local' || t.turn === me);
+    let status;
+    if (t.win === 'draw') status = 'Deu velha!';
+    else if (t.win != null) status = `${esc(S.names[t.win])} venceu!`;
+    else if (S.mode === 'p2p') status = t.turn === me ? 'Sua vez!' : `<span class="dots">Vez de ${esc(partner())}</span>`;
+    else status = `Vez de ${esc(S.names[t.turn])}`;
+    const player = p => `
+      <div class="flex-1 card p-3 text-center transition" style="${t.win == null && t.turn === p ? `border-color:${p === 0 ? 'rgba(240,122,151,.6)' : 'rgba(235,203,139,.6)'};box-shadow:0 0 24px -8px ${p === 0 ? 'rgba(240,122,151,.8)' : 'rgba(235,203,139,.8)'}` : ''}">
+        <div class="flex justify-center mb-1">${avatar(p)}</div>
+        <p class="text-xs truncate muted">${esc(S.names[p])}</p>
+        <p class="font-display text-2xl">${t.score[p]}</p>
+      </div>`;
+    return `
+    <main class="screen">
+      ${hdr('Jogo da Velha')}
+      <div class="flex gap-3 items-stretch mb-5">
+        ${player(0)}
+        <div class="flex flex-col justify-center text-center px-1"><p class="text-[10px] muted uppercase tracking-wider">Empates</p><p class="font-display text-xl">${t.draws}</p></div>
+        ${player(1)}
+      </div>
+      <p class="text-center font-semibold mb-4" style="color:#F7D7D6">${status}</p>
+      <div class="grid grid-cols-3 gap-3 max-w-[340px] mx-auto">
+        ${t.b.map((v, i) => `<button class="cell ${t.line && t.line.includes(i) ? 'win' : ''}" ${canPlay && v == null ? ap('tttMove', { i }) : 'disabled'} aria-label="Casa ${i + 1}">${sym(v, i)}</button>`).join('')}
+      </div>
+      ${msgCard()}
+      ${t.win != null ? `<button ${ap('tttReset')} class="btn btn-primary w-full mt-5"><i data-lucide="rotate-ccw"></i>Nova partida</button>` : ''}
+    </main>`;
+  },
+
+  wheel() {
+    const w = S.wheel, n = PRENDAS.length, seg = 360 / n;
+    const pt = (a, r) => { const rad = a * Math.PI / 180; return `${(r * Math.sin(rad)).toFixed(2)},${(-r * Math.cos(rad)).toFixed(2)}`; };
+    const colors = ['#5A1A55', '#8B2346', '#3B1238', '#B04A66'];
+    const segs = PRENDAS.map((p, i) => {
+      const a0 = (i - .5) * seg, a1 = (i + .5) * seg;
+      return `<path d="M0,0 L${pt(a0, 140)} A140,140 0 0,1 ${pt(a1, 140)} Z" fill="${colors[i % 4]}" stroke="rgba(217,178,111,.5)" stroke-width="1"/>
+        <text transform="rotate(${i * seg - 90}) translate(96,0)" text-anchor="middle" dominant-baseline="middle"
+          fill="#FBE4E6" font-size="11.5" font-weight="600" font-family="DM Sans, sans-serif">${p.short}</text>`;
+    }).join('');
+    const bulbs = Array.from({ length: 24 }, (_, i) => { const [x, y] = pt(i * 15, 147).split(','); return `<circle class="bulb" cx="${x}" cy="${y}" r="2.6"/>`; }).join('');
+    const spinning = !!L.anim;
+    const shown = w.idx != null && !spinning && L.animDone === w.spinId;
+    let result = '';
+    if (shown) {
+      const pz = PRENDAS[w.idx];
+      const txt = esc(pz.txt).replace(/\{a\}/g, `<b>${esc(S.names[w.target])}</b>`).replace(/\{b\}/g, `<b>${esc(S.names[1 - w.target])}</b>`);
+      const done = w.doneId === w.spinId;
+      result = `
+      <div class="card p-5 mt-6 fade-up">
+        <div class="flex items-center gap-3 mb-3">
+          <span class="avatar ${pz.type === 'premio' ? 'av-b' : 'av-a'}"><i data-lucide="${pz.icon}"></i></span>
+          <div><p class="eyebrow">${pz.type === 'premio' ? 'Prêmio' : 'Prenda'}</p><p class="font-display text-xl leading-tight">${pz.short}</p></div>
+        </div>
+        <p class="leading-relaxed" style="color:#F7D7D6">${txt}</p>
+        ${done ? msgCard() : `<button ${ap('wheelDone')} class="btn btn-gold w-full mt-4"><i data-lucide="check"></i>Cumprido! +5</button>`}
+      </div>`;
+    }
+    const hist = w.history.slice(shown || !w.spinId ? (shown ? 1 : 0) : 1, 6);
+    return `
+    <main class="screen">
+      ${hdr('Roleta do Amor')}
+      <p class="text-center text-sm mb-5 muted">${spinning ? 'Girando para' : 'Próximo giro para'}
+        <b style="color:#F7D7D6">${esc(S.names[spinning ? w.target : w.next])}</b></p>
+      <div class="wheel-wrap ${spinning ? 'spinning' : ''}" id="wheelWrap">
+        <div class="wheel-pointer"></div>
+        <svg viewBox="-152 -152 304 304" aria-hidden="true">
+          <circle r="151" fill="#2D112B" stroke="#D9B26F" stroke-width="3"/>
+          <g id="wheelG" transform="rotate(${L.rot})">${segs}</g>
+          <circle r="140" fill="none" stroke="rgba(217,178,111,.7)" stroke-width="1.5"/>
+          <g>${bulbs}</g>
+        </svg>
+        <button id="wheelHub" ${ap('wheelSpin')} class="wheel-hub" ${spinning ? 'disabled' : ''}>GIRAR</button>
+      </div>
+      ${result}
+      ${hist.length ? `
+        <div class="mt-6">
+          <p class="eyebrow mb-2 px-1">Últimos giros</p>
+          <div class="flex flex-wrap gap-2">${hist.map(x => `<span class="pill" style="background:rgba(255,255,255,.05);border-color:rgba(255,255,255,.12);color:var(--muted)">${PRENDAS[x.i].short} · ${esc(S.names[x.t])}</span>`).join('')}</div>
+        </div>` : ''}
+    </main>`;
+  }
+};
+
+function render() {
+  const v = VIEWS[S.screen] || VIEWS.welcome;
+  $('#app').innerHTML = v();
+  if (window.lucide) lucide.createIcons({ attrs: { 'stroke-width': 2 } });
+  document.body.classList.toggle('cozy', L.cozy);
+}
+
+/* ---------- Ações locais (não sincronizadas) ---------- */
+const UI = {
+  home() { netCleanup(); me = null; L.net = 'idle'; S = freshState(); render(); },
+  pickLocal() { S.screen = 'setup'; render(); },
+  pickP2P() { S.screen = 'p2p'; L.net = 'idle'; render(); },
+  saveLocal() {
+    const a = L.n0.trim(), b = L.n1.trim();
+    if (!a || !b) { toast('Digitem os dois nomes para começar.'); return; }
+    if (a.toLowerCase() === b.toLowerCase()) { toast('Usem nomes diferentes para não confundir o placar.'); return; }
+    store.set('n0', a); store.set('n1', b);
+    S = freshState(); me = null;
+    S.mode = 'local'; S.names = [a, b]; S.screen = 'menu';
+    SND.play('join');
+    render();
+  },
+  host() {
+    if (!L.myName.trim()) { toast('Digite seu nome primeiro.'); return; }
+    store.set('myName', L.myName.trim());
+    hostRoom();
+  },
+  join() {
+    const code = L.joinCode.trim().toUpperCase();
+    if (!L.myName.trim()) { toast('Digite seu nome primeiro.'); return; }
+    if (code.length !== 4) { toast('O código tem 4 caracteres.'); return; }
+    store.set('myName', L.myName.trim());
+    L.joinCode = code;
+    joinRoom(code);
+  },
+  cancelNet() { netCleanup(); me = null; L.net = 'idle'; render(); },
+  copyCode() {
+    const done = () => toast('Código copiado! Envie para seu par.');
+    if (navigator.clipboard) navigator.clipboard.writeText(L.code).then(done, () => toast('Código: ' + L.code));
+    else toast('Código: ' + L.code);
+  },
+  cozy() { L.cozy = !L.cozy; store.set('cozy', L.cozy); render(); toast(L.cozy ? 'Modo aconchego ligado' : 'Modo aconchego desligado', 1500); },
+  sound() { L.sound = !L.sound; store.set('sound', L.sound); if (L.sound) SND.play('select'); render(); },
+  leave() {
+    if (!confirm(S.mode === 'p2p' ? 'Sair da sala e encerrar a partida?' : 'Voltar ao início? O placar desta sessão será zerado.')) return;
+    hsStopLoop();
+    const wasP2P = S.mode === 'p2p';
+    if (wasP2P) { const c = conn; conn = null; try { c && c.close(); } catch {} netCleanup(); }
+    me = null; L.net = 'idle';
+    S = freshState();
+    S.screen = wasP2P ? 'p2p' : 'setup';
+    render();
+  }
+};
+
+/* ---------- Eventos ---------- */
+document.addEventListener('pointerdown', e => {
+  SND.init();
+  const tz = e.target.closest('[data-tap]');
+  if (tz) { e.preventDefault(); onTap(+tz.dataset.tap, e); }
+}, { passive: false });
+
+document.addEventListener('click', e => {
+  const u = e.target.closest('[data-ui]');
+  if (u) { SND.play('tap'); UI[u.dataset.ui] && UI[u.dataset.ui](u); return; }
+  const a = e.target.closest('[data-act]');
+  if (a && !a.disabled) {
+    let p = {};
+    try { p = JSON.parse(a.dataset.p || '{}'); } catch {}
+    if (a.dataset.act !== 'quizPick' && a.dataset.act !== 'tttMove') SND.play('tap');
+    act(a.dataset.act, p);
+  }
+});
+
+document.addEventListener('input', e => {
+  const k = e.target.dataset && e.target.dataset.bind;
+  if (!k) return;
+  if (k === 'joinCode') {
+    const v = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 4);
+    if (v !== e.target.value) e.target.value = v;
+    L[k] = v;
+  } else L[k] = e.target.value;
+});
+
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Enter' || !e.target.dataset || !e.target.dataset.bind) return;
+  const k = e.target.dataset.bind;
+  if (k === 'joinCode') UI.join();
+  else if (k === 'myName') UI.host();
+  else if (k === 'n1' || k === 'n0') UI.saveLocal();
+});
+
+// Brasas do modo aconchego
+(function makeEmbers() {
+  const box = $('#embers');
+  for (let i = 0; i < 16; i++) {
+    const s = document.createElement('span');
+    s.style.left = Math.random() * 100 + '%';
+    s.style.setProperty('--dx', (Math.random() * 80 - 40) + 'px');
+    s.style.animationDuration = (9 + Math.random() * 10) + 's';
+    s.style.animationDelay = (-Math.random() * 18) + 's';
+    const sz = 3 + Math.random() * 5;
+    s.style.width = s.style.height = sz + 'px';
+    box.appendChild(s);
+  }
+})();
+
+window.addEventListener('beforeunload', () => { try { conn && conn.close(); peer && peer.destroy(); } catch {} });
+
+render();
+requestAnimationFrame(loop);
+</script>
+</body>
+</html>
