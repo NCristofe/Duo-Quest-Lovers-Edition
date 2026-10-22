@@ -156,6 +156,12 @@
     box-shadow: 0 20px 40px -10px rgba(0, 0, 0, .6); }
   #toast.show { transform: translate(-50%, 0); }
 
+  .trail-cell { aspect-ratio: 1; border-radius: 14px; display: flex; flex-direction: column; align-items: center; justify-content: center;
+    background: rgba(255, 255, 255, .05); border: 1px solid rgba(247, 202, 201, .12); font-size: 11px; }
+  .trail-cell.special { border-color: rgba(217, 178, 111, .55); background: rgba(217, 178, 111, .1); }
+  .simon-pad { aspect-ratio: 1; border-radius: 28px; border: 0; opacity: .38; transition: opacity .12s, transform .12s, box-shadow .12s; }
+  .simon-pad.lit { opacity: 1; transform: scale(1.04); box-shadow: 0 0 36px -4px currentColor; }
+  .simon-pad:active { transform: scale(.96); }
   @media (prefers-reduced-motion: reduce) {
     *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; }
   }
@@ -247,32 +253,21 @@ const MSG = {
 };
 
 const GAMES = [
-  { id: 'quiz',  title: 'Sintonia do Casal', sub: 'Quem é mais provável que...?', icon: 'message-circle-heart', tint: 'rgba(194,86,111,.25)', color: '#F7A8B8' },
-  { id: 'heart', title: 'Heart Sync',        sub: 'Mantenham o coração no ritmo', icon: 'heart-pulse',          tint: 'rgba(139,30,63,.35)',  color: '#FF8FA3' },
-  { id: 'ttt',   title: 'Jogo da Velha',     sub: 'Corações contra estrelas',     icon: 'grid-3x3',             tint: 'rgba(217,178,111,.2)', color: '#EBCB8B' },
-  { id: 'wheel', title: 'Roleta do Amor',    sub: 'Prêmios e prendas',            icon: 'disc-3',               tint: 'rgba(247,202,201,.16)', color: '#F7CAC9' },
-  { id: 'reflex', title: 'Reflexo Duplo',    sub: 'Quem toca primeiro?',          icon: 'zap',                  tint: 'rgba(217,178,111,.18)', color: '#EBCB8B' },
-  { id: 'know',   title: 'Quem Conhece Quem', sub: 'Adivinhe a resposta do par',  icon: 'eye',                  tint: 'rgba(194,86,111,.2)',  color: '#F7A8B8' },
-  { id: 'draw',   title: 'Desenhe e Adivinhe', sub: 'Um desenha, o outro chuta',  icon: 'pencil-line',          tint: 'rgba(247,202,201,.14)', color: '#F7CAC9' },
-  { id: 'tug',    title: 'Cabo de Guerra',   sub: 'Puxem para o seu lado',        icon: 'move-horizontal',      tint: 'rgba(139,30,63,.3)',   color: '#FF8FA3' },
-  { id: 'frase',  title: 'Batalha de Frases', sub: 'Completem e votem',           icon: 'pen-line',             tint: 'rgba(217,178,111,.2)', color: '#EBCB8B' },
-  { id: 'mime',   title: 'Mímica Romântica', sub: 'Atue e adivinhe',              icon: 'theater',              tint: 'rgba(194,86,111,.25)', color: '#F7A8B8' },
-  { id: 'cards',  title: 'Sorte ou Desafio', sub: 'Tire uma carta',               icon: 'layers',               tint: 'rgba(139,30,63,.35)',  color: '#FF8FA3' },
-  { id: 'mem',    title: 'Quem Erra Menos',  sub: 'Memória de palavras',          icon: 'brain',                tint: 'rgba(247,202,201,.14)', color: '#F7CAC9' },
-  { id: 'trip',   title: 'Viagem a Dois',    sub: 'Escolham o caminho',           icon: 'map',                  tint: 'rgba(217,178,111,.18)', color: '#EBCB8B' }
+  { id: 'quiz',   title: 'Sintonia do Casal', sub: 'Quem é mais provável que...?', icon: 'message-circle-heart', tint: 'rgba(194,86,111,.25)', color: '#F7A8B8' },
+  { id: 'heart',  title: 'Heart Sync',        sub: 'Mantenham o coração no ritmo', icon: 'heart-pulse',          tint: 'rgba(139,30,63,.35)',  color: '#FF8FA3' },
+  { id: 'ttt',    title: 'Jogo da Velha',     sub: 'Corações contra estrelas',     icon: 'grid-3x3',             tint: 'rgba(217,178,111,.2)', color: '#EBCB8B' },
+  { id: 'wheel',  title: 'Roleta do Amor',    sub: 'Prêmios e prendas',            icon: 'disc-3',               tint: 'rgba(247,202,201,.16)', color: '#F7CAC9' },
+  { id: 'reflex', title: 'Reflexo Duplo',     sub: 'Quem toca primeiro?',          icon: 'zap',                  tint: 'rgba(217,178,111,.18)', color: '#EBCB8B' },
+  { id: 'draw',   title: 'Desenhe e Adivinhe', sub: 'Um desenha, o outro chuta',   icon: 'pencil-line',          tint: 'rgba(247,202,201,.14)', color: '#F7CAC9' },
+  { id: 'tug',    title: 'Cabo de Guerra',    sub: 'Puxem para o seu lado',        icon: 'move-horizontal',      tint: 'rgba(139,30,63,.3)',   color: '#FF8FA3' },
+  { id: 'frase',  title: 'Batalha de Frases', sub: 'Completem e votem',            icon: 'pen-line',             tint: 'rgba(217,178,111,.2)', color: '#EBCB8B' },
+  { id: 'mime',   title: 'Mímica Romântica',  sub: 'Atue e adivinhe',              icon: 'theater',              tint: 'rgba(194,86,111,.25)', color: '#F7A8B8' },
+  { id: 'tower',  title: 'Torre do Amor',     sub: 'Empilhem no tempo certo',      icon: 'building-2',           tint: 'rgba(217,178,111,.18)', color: '#EBCB8B' },
+  { id: 'trail',  title: 'Trilha do Amor',    sub: 'Rolem o dado e avancem',       icon: 'footprints',           tint: 'rgba(194,86,111,.2)',  color: '#F7A8B8' },
+  { id: 'simon',  title: 'Sequência do Coração', sub: 'Repitam as cores',          icon: 'grid-2x2',             tint: 'rgba(139,30,63,.35)',  color: '#FF8FA3' }
 ];
 
-/* Conteúdo dos novos jogos */
-const KNOW = [
-  { q: 'Qual é a minha comida favorita?', o: ['Pizza', 'Sushi', 'Lasanha', 'Churrasco'] },
-  { q: 'Qual é o meu filme favorito?', o: ['Comédia', 'Romance', 'Terror', 'Ação'] },
-  { q: 'Qual é o meu lugar favorito para viajar?', o: ['Praia', 'Montanha', 'Cidade grande', 'Interior'] },
-  { q: 'Qual é a minha estação do ano favorita?', o: ['Verão', 'Outono', 'Inverno', 'Primavera'] },
-  { q: 'Qual é o meu hobby favorito?', o: ['Ler', 'Jogar', 'Cozinhar', 'Esportes'] },
-  { q: 'Qual é o meu doce preferido?', o: ['Chocolate', 'Brigadeiro', 'Sorvete', 'Bolo'] },
-  { q: 'Qual é o meu jeito ideal de passar o domingo?', o: ['Dormindo até tarde', 'Passeando', 'Em casa, vendo filme', 'Com os amigos'] },
-  { q: 'Qual é a minha bebida favorita?', o: ['Café', 'Suco', 'Vinho', 'Refrigerante'] }
-];
+/* Conteúdo dos jogos */
 const DRAW_WORDS = ['Pizza', 'Coração', 'Gato', 'Praia', 'Avião', 'Lua', 'Chuva', 'Bicicleta', 'Café', 'Montanha', 'Sorvete', 'Violão',
   'Dragão', 'Girassol', 'Cinema', 'Foguete', 'Bolo', 'Guarda-chuva', 'Sofá', 'Estrela', 'Relógio', 'Abraço', 'Pipoca', 'Carro'];
 const TUG_TIME = 15;
@@ -289,32 +284,15 @@ const FRASES = [
 const MIME_WORDS = ['Pizza', 'Dormir', 'Dançar', 'Cozinhar', 'Andar de bicicleta', 'Pescar', 'Surfar', 'Tirar foto', 'Ler um livro',
   'Cantar no chuveiro', 'Esquecer a chave', 'Fazer yoga', 'Lavar a louça', 'Filme de terror', 'Viajar de avião', 'Cafuné',
   'Ronco', 'Pedir desculpas', 'Acordar cedo', 'Tocar violão'];
-const CARDS = [
-  'Faça uma pergunta que você nunca fez ao seu par.',
-  'Dê um abraço de 20 segundos sem falar nada.',
-  'Conte a sua lembrança favorita da infância.',
-  'Escolha a música que vocês vão dançar juntos por 1 minuto.',
-  'Sussurre no ouvido do outro o que mais gosta nele(a).',
-  'Imite o jeito que o outro fala por 15 segundos.',
-  'Faça um elogio que o outro nunca esperaria ouvir.',
-  'Diga algo romântico em voz de locutor de rádio.',
-  'Tire uma foto do casal agora, na pose mais engraçada.',
-  'Fique 30 segundos de olhos fechados e deixe o outro escolher o próximo passo.',
-  'Faça um cafuné de 1 minuto.',
-  'Conte algo que aprendeu sobre o outro recentemente.',
-  'Cante um refrão de qualquer música para o outro.',
-  'Escolha onde vocês vão jantar no próximo fim de semana.'
-];
-const MEM_WORDS = ['casa', 'praia', 'pizza', 'chuva', 'violão', 'elefante', 'foguete', 'jardim', 'bolo', 'lua', 'bicicleta', 'livro',
-  'café', 'montanha', 'cachorro', 'sorvete', 'janela', 'estrela', 'relógio', 'ponte', 'pipoca', 'tigre', 'mapa', 'flor', 'sapato',
-  'navio', 'espelho', 'vulcão'];
-const TRIP = [
-  { q: 'Onde vocês vão passar as férias?', o: ['Praia tropical', 'Montanha com neve', 'Cidade histórica'] },
-  { q: 'Como vão se locomover?', o: ['Carro alugado', 'Trem panorâmico', 'Passeio de balão'] },
-  { q: 'Qual será a primeira atividade?', o: ['Trilha ao amanhecer', 'Jantar romântico', 'Dia de spa'] },
-  { q: 'Caiu uma chuva forte! O que fazem?', o: ['Maratona de filmes no hotel', 'Explorar a cidade de guarda-chuva', 'Cozinhar juntos'] },
-  { q: 'No último dia, qual lembrança levar?', o: ['Uma foto', 'Um souvenir', 'Um bilhete escrito a dois'] }
-];
+const SIMON_COLORS = ['#C2566F', '#EBCB8B', '#8B1E3F', '#F7CAC9'];
+const TRAIL_END = 23;
+const TRAIL_SPECIAL = {
+  4: { d: 3, t: 'Atalho romântico! Avancem 3 casas.' },
+  9: { d: -4, t: 'Briguinha boba... voltem 4 casas.' },
+  13: { d: 2, t: 'Um sorriso de bônus! Avancem 2.' },
+  18: { d: -3, t: 'Esqueceram o mapa. Voltem 3 casas.' },
+  21: { d: 2, t: 'Quase lá! Avancem 2.' }
+};
 
 /* ======================================================================
    Utilitários
@@ -428,14 +406,13 @@ function freshState() {
     ttt: { b: Array(9).fill(null), turn: 0, starter: 0, win: null, line: null, lastI: -1, score: [0, 0], draws: 0 },
     wheel: { spinId: 0, doneId: 0, idx: null, target: 0, next: 0, history: [] },
     reflex: { phase: 'idle', t: 0, delay: 0, goAt: 0, times: [null, null], win: null, early: null },
-    know: { deck: [], i: -1, reader: 0, phase: 'idle', pick: null, guess: null, score: [0, 0], rounds: 0 },
     draw: { phase: 'idle', word: '', drawer: 0, strokes: [], ok: null, rounds: 0, score: [0, 0] },
     tug: { phase: 'idle', pos: 50, t: 0, win: null },
     frase: { phase: 'idle', prompt: '', texts: [null, null], votes: [null, null], rounds: 0 },
     mime: { phase: 'idle', word: '', actor: 0, t: 0, ok: null, rounds: 0 },
-    cards: { phase: 'idle', deck: [], i: -1, turn: 0, card: null, swapped: false },
-    mem: { phase: 'idle', words: [], idx: 0, t: 0, ans: [null, null], score: [0, 0] },
-    trip: { phase: 'idle', i: 0, picks: [null, null], log: [] },
+    tower: { phase: 'idle', t: 0, stack: [{ l: .2, r: .8 }], speed: .9, best: 0 },
+    trail: { phase: 'idle', pos: [0, 0], turn: 0, last: null, winner: null },
+    simon: { phase: 'idle', seq: [], t: 0, input: [], best: 0 },
     plays: {}
   };
 }
@@ -551,10 +528,6 @@ const R = {
 function played(id) { S.plays[id] = (S.plays[id] || 0) + 1; }
 function rec(ok) { S.sync.max += 1; if (ok) S.sync.got += 1; }
 const normTxt = s => String(s ?? '').trim().toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '');
-function nextCard(c) {
-  if (!c.deck.length || c.i >= c.deck.length - 1) { c.deck = shuffle(CARDS.map((_, i) => i)); c.i = 0; } else c.i++;
-  return c.deck[c.i];
-}
 function reflexFinish() {
   const r = S.reflex;
   if (r.phase === 'done') return;
@@ -600,31 +573,6 @@ Object.assign(R, {
       if (r.times[0] != null && r.times[1] != null) reflexFinish();
     }
   },
-
-  knowNew() {
-    const k = S.know;
-    if (!k.deck.length || k.i >= k.deck.length - 1) { k.deck = shuffle(KNOW.map((_, i) => i)); k.i = 0; } else k.i++;
-    Object.assign(k, { reader: k.rounds % 2, pick: null, guess: null, phase: 'pick' });
-    S.msg = null;
-  },
-  knowPick(p, who) {
-    const k = S.know;
-    if (k.phase !== 'pick' || who !== k.reader) return;
-    k.pick = p.v;
-    k.phase = S.mode === 'local' ? 'handoff' : 'guess';
-  },
-  knowReady() { if (S.know.phase === 'handoff') S.know.phase = 'guess'; },
-  knowGuess(p, who) {
-    const k = S.know;
-    if (k.phase !== 'guess' || who !== 1 - k.reader) return;
-    const ok = p.v === k.pick;
-    k.guess = p.v; k.phase = 'reveal'; k.rounds++;
-    if (ok) { k.score[1 - k.reader]++; S.points += 10; }
-    rec(ok); played('know');
-    S.msg = ok ? pick(MSG.match) : pick(MSG.miss);
-    fx(ok ? 'match' : 'miss');
-  },
-  knowNext() { R.knowNew(); },
 
   drawNew() {
     const d = S.draw;
@@ -703,60 +651,90 @@ Object.assign(R, {
   mimePass(p, who) { const m = S.mime; if (m.phase === 'play' && who === m.actor) mimeFail('Pulou! Vamos para a próxima.'); },
   mimeNext() { R.mimeNew(); },
 
-  cardsNew() { Object.assign(S.cards, { phase: 'draw', deck: [], i: -1, card: null, swapped: false }); S.msg = null; },
-  cardDraw(p, who) {
-    const c = S.cards;
-    if (c.phase !== 'draw' || who !== c.turn) return;
-    c.card = nextCard(c); c.phase = 'act'; c.swapped = false;
-  },
-  cardDo(p, who) {
-    const c = S.cards;
-    if (c.phase !== 'act' || who !== c.turn) return;
-    S.points += 5; played('cards'); S.msg = pick(MSG.wheelDone); fx('match');
-    c.turn ^= 1; c.phase = 'draw'; c.card = null;
-  },
-  cardSwap(p, who) {
-    const c = S.cards;
-    if (c.phase !== 'act' || c.swapped || who !== c.turn) return;
-    c.card = nextCard(c); c.swapped = true;
-  },
-
-  memStart() {
-    Object.assign(S.mem, { phase: 'show', words: shuffle(MEM_WORDS).slice(0, 5), idx: 0, t: 0, ans: [null, null], score: [0, 0] });
+  towerStart() {
+    Object.assign(S.tower, { phase: 'play', t: 0, stack: [{ l: .2, r: .8 }], speed: .9 });
     S.msg = null;
   },
-  memAnswer(p, who) {
-    const m = S.mem;
-    if (m.phase !== 'recall' || m.ans[who] != null) return;
-    m.ans[who] = String(p.text ?? '').split(/[,;\n]/).map(normTxt).filter(Boolean);
-    if (m.ans[0] == null || m.ans[1] == null) return;
-    const ws = m.words.map(normTxt);
-    m.score = m.ans.map(l => ws.filter(w => l.includes(w)).length);
-    const [a, b] = m.score;
-    m.phase = 'done'; S.points += 10; rec(a + b > 0); played('mem'); fx('match');
-    S.msg = a === b ? `Empate com ${a} palavra${a === 1 ? '' : 's'}! Memória de elefante a dois.` : `${S.names[a > b ? 0 : 1]} lembrou de mais palavras!`;
+  towerDrop() {
+    const tw = S.tower;
+    if (tw.phase !== 'play') return;
+    const top = tw.stack[tw.stack.length - 1], w = top.r - top.l;
+    const x = towerX(tw.t, w);
+    const l = Math.max(x, top.l), r = Math.min(x + w, top.r);
+    if (r - l < .015) { towerOver(); return; }
+    tw.stack.push({ l, r });
+    tw.speed = Math.min(2.4, .9 + .07 * (tw.stack.length - 1));
+    fx('tap');
   },
-  memNext() { R.memStart(); },
 
-  tripStart() { Object.assign(S.trip, { phase: 'pick', i: 0, picks: [null, null], log: [] }); S.msg = null; },
-  tripPick(p, who) {
-    const t = S.trip;
-    if (t.phase !== 'pick' || t.picks[who] != null) return;
-    t.picks[who] = p.v;
-    if (t.picks[0] == null || t.picks[1] == null) return;
-    const sc = TRIP[t.i], [a, b] = t.picks;
-    let txt;
-    if (a === b) { S.points += 5; rec(true); txt = `Vocês escolheram ${sc.o[a]}. No mesmo passo!`; }
-    else { const c = Math.random() < .5 ? a : b; S.points += 3; rec(false); txt = `Divergiram (${sc.o[a]} x ${sc.o[b]}). O destino escolheu: ${sc.o[c]}.`; }
-    t.log.push(txt); S.msg = txt; fx('select');
-    if (t.i + 1 >= TRIP.length) { t.phase = 'end'; played('trip'); }
-    else { t.i++; t.picks = [null, null]; }
+  trailStart() { Object.assign(S.trail, { phase: 'play', pos: [0, 0], turn: 0, last: null, winner: null }); S.msg = null; },
+  trailRoll(p, who) {
+    const tr = S.trail;
+    if (tr.phase !== 'play' || who !== tr.turn) return;
+    const roll = 1 + Math.floor(Math.random() * 6);
+    let to = Math.min(TRAIL_END, tr.pos[who] + roll);
+    let extra = '';
+    const sp = TRAIL_SPECIAL[to];
+    if (sp && to < TRAIL_END) { to = Math.max(0, Math.min(TRAIL_END, to + sp.d)); extra = ' ' + sp.t; }
+    tr.pos[who] = to;
+    tr.last = { who, roll };
+    S.msg = `${S.names[who]} tirou ${roll}.${extra}`;
+    if (to >= TRAIL_END) {
+      tr.phase = 'over'; tr.winner = who; S.points += 15; rec(true); played('trail');
+      S.msg = `${S.names[who]} chegou ao coração da trilha!`; fx('win');
+    } else { tr.turn ^= 1; fx('select'); }
+  },
+
+  simonStart() {
+    Object.assign(S.simon, { phase: 'show', seq: [Math.floor(Math.random() * 4)], t: 0, input: [] });
+    S.msg = null;
+  },
+  simonTap(p) {
+    const s = S.simon;
+    if (s.phase !== 'input') return;
+    fx('tap');
+    if (p.k !== s.seq[s.input.length]) { simonOver(); return; }
+    s.input.push(p.k);
+    if (s.input.length === s.seq.length) {
+      S.points += 2; rec(true);
+      s.seq.push(Math.floor(Math.random() * 4));
+      Object.assign(s, { input: [], t: 0, phase: 'show' });
+      S.msg = `Sequência de ${s.seq.length}! Sintam o ritmo.`;
+      fx('match');
+    }
   }
 });
 
+function towerX(t, w) {
+  const p = (t * S.tower.speed) % 2;
+  return (p < 1 ? p : 2 - p) * (1 - w);
+}
+function towerOver() {
+  const tw = S.tower;
+  if (tw.phase !== 'play') return;
+  tw.phase = 'over';
+  const n = tw.stack.length - 1;
+  tw.best = Math.max(tw.best, n);
+  S.points += n * 2; rec(n >= 5); played('tower');
+  S.msg = n === 0 ? 'A torre caiu logo no começo. Tentem de novo!' : `A torre chegou a ${n} ${n === 1 ? 'bloco' : 'blocos'}!`;
+  fx(n >= 5 ? 'win' : 'miss');
+}
+function simonLit(s) {
+  const step = s.t / .7, k = Math.floor(step);
+  if (k >= s.seq.length) return -1;
+  return step - k < .6 ? s.seq[k] : -1;
+}
+function simonOver() {
+  const s = S.simon;
+  if (s.phase !== 'input') return;
+  s.phase = 'over';
+  const n = s.seq.length - 1;
+  s.best = Math.max(s.best, n); rec(false); played('simon'); fx('miss');
+  S.msg = `Fim de jogo! Chegaram a ${n} ${n === 1 ? 'cor' : 'cores'}.`;
+}
 function gameLive() {
   return S.reflex.phase === 'wait' || S.reflex.phase === 'go' || S.tug.phase === 'play' ||
-    S.mime.phase === 'play' || S.mem.phase === 'show';
+    S.mime.phase === 'play' || S.tower.phase === 'play' || S.simon.phase === 'show';
 }
 function tickGames(dt) {
   const r = S.reflex;
@@ -766,12 +744,41 @@ function tickGames(dt) {
   if (g.phase === 'play') { g.t += dt; if (g.t >= TUG_TIME) { tugEnd(); commit(); } }
   const m = S.mime;
   if (m.phase === 'play') { m.t += dt; if (m.t >= 60) { mimeFail('Tempo esgotado!'); commit(); } }
-  const mm = S.mem;
-  if (mm.phase === 'show') {
-    mm.t += dt;
-    if (mm.t >= 2) { mm.t = 0; mm.idx++; if (mm.idx >= mm.words.length) { mm.phase = 'recall'; commit(); } }
+  if (S.tower.phase === 'play') S.tower.t += dt;
+  const sm = S.simon;
+  if (sm.phase === 'show') {
+    sm.t += dt;
+    if (sm.t >= sm.seq.length * .7 + .4) { sm.phase = 'input'; sm.t = 0; commit(); }
   }
 }
+function paintTower() {
+  const cv = $('#towerCv');
+  if (!cv) return;
+  const dpr = Math.min(2, window.devicePixelRatio || 1);
+  const W = cv.clientWidth, H = cv.clientHeight;
+  if (!W || !H) return;
+  if (cv.width !== Math.round(W * dpr) || cv.height !== Math.round(H * dpr)) { cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr); }
+  const c = cv.getContext('2d');
+  c.setTransform(dpr, 0, 0, dpr, 0, 0);
+  c.clearRect(0, 0, W, H);
+  const tw = S.tower, n = tw.stack.length, bh = H / 9;
+  const shift = Math.max(0, n + 1 - 8) * bh;
+  const colors = ['#8B1E3F', '#A8345A', '#C2566F', '#D9B26F', '#EBCB8B'];
+  const block = (b, row, color) => {
+    c.fillStyle = color;
+    roundRect(c, b.l * W, H - (row + 1) * bh + shift, (b.r - b.l) * W, bh - 3, 8);
+    c.fill();
+  };
+  tw.stack.forEach((b, i) => block(b, i, colors[i % colors.length]));
+  const top = tw.stack[n - 1], w = top.r - top.l;
+  const x = tw.phase === 'play' ? towerX(tw.t, w) : 0;
+  block({ l: x, r: x + w }, n, '#F7CAC9');
+}
+function paintSimon() {
+  const s = S.simon, lit = s.phase === 'show' ? simonLit(s) : -1;
+  SIMON_COLORS.forEach((_, k) => { const el = $('#simon-' + k); if (el) el.classList.toggle('lit', k === lit); });
+}
+
 let gTimer = null, gFrame = 0;
 function ensureGTimer() {
   if (gTimer) return;
@@ -782,6 +789,10 @@ function ensureGTimer() {
     last = now;
     tickGames(dt);
     if (!gameLive()) { clearInterval(gTimer); gTimer = null; commit(); return; }
+    if (S.mode === 'p2p' && gFrame % 3 === 0) {
+      if (S.tower.phase === 'play') send({ t: 'clk', g: 'tower', v: S.tower.t });
+      if (S.simon.phase === 'show') send({ t: 'clk', g: 'simon', v: S.simon.t });
+    }
     if (++gFrame % 15 === 0) commit();
   }, 33);
 }
@@ -817,6 +828,35 @@ function paintDraw() {
   cv.addEventListener('pointercancel', up);
 }
 
+/* ---------- Perfil do casal (salvo no navegador) ---------- */
+// Cada par de nomes é um perfil fixo: os mesmos dois nomes voltam com o mesmo placar.
+const profileKey = names => 'profile:' + names.map(normTxt).sort().join('|');
+function saveProfile() {
+  if (!S.names[0] || !S.names[1]) return;
+  const data = {
+    points: S.points, sync: S.sync, plays: S.plays,
+    quiz: { matches: S.quiz.matches, rounds: S.quiz.rounds },
+    ttt: { score: S.ttt.score, draws: S.ttt.draws },
+    hs: { plays: S.hs.plays, wins: S.hs.wins, best: S.hs.best }
+  };
+  const json = JSON.stringify(data);
+  if (json === L.lastSaved) return;
+  L.lastSaved = json;
+  store.set(profileKey(S.names), data);
+}
+function applyProfile(names) {
+  L.lastSaved = null;
+  const d = store.get(profileKey(names), null);
+  if (!d) return false;
+  S.points = d.points ?? 0;
+  S.sync = d.sync ?? { got: 0, max: 0 };
+  S.plays = d.plays ?? {};
+  Object.assign(S.quiz, d.quiz ?? {});
+  Object.assign(S.ttt, { score: d.ttt?.score ?? [0, 0], draws: d.ttt?.draws ?? 0 });
+  Object.assign(S.hs, d.hs ?? {});
+  return true;
+}
+
 function quizNewQuestion() {
   const q = S.quiz;
   if (!q.deck.length || q.i >= q.deck.length - 1) { q.deck = shuffle(QUESTIONS.map((_, i) => i)); q.i = 0; }
@@ -848,6 +888,7 @@ function commit() {
   render();
   if (S.mode === 'p2p' && me === 0) send({ t: 'state', s: S });
   if (!isGuest() && gameLive()) ensureGTimer();
+  if (!isGuest()) saveProfile();
 }
 // Efeitos derivados do estado: sons, partículas e animação da roleta
 function afterState() {
@@ -1074,6 +1115,8 @@ function loop(now) {
   requestAnimationFrame(loop);
   stepWheel(now);
   if (S.screen === 'heart') drawHS(now);
+  if (S.screen === 'tower') paintTower();
+  if (S.screen === 'simon') paintSimon();
 }
 
 /* ======================================================================
@@ -1146,6 +1189,7 @@ function onData(d) {
       S = freshState();
       S.mode = 'p2p';
       S.names = [L.myName.trim() || 'Amor', String(d.name || 'Amor').slice(0, 20)];
+      applyProfile(S.names);
       S.screen = 'menu';
       fx('join');
       commit();
@@ -1163,6 +1207,7 @@ function onData(d) {
       afterState();
       render();
     } else if (d.t === 'hs') Object.assign(S.hs, d.hs);
+    else if (d.t === 'clk' && S[d.g]) S[d.g].t = d.v;
   }
 }
 
@@ -1361,7 +1406,8 @@ const VIEWS = {
           </button>`).join('')}
       </div>
 
-      <button data-ui="leave" class="btn btn-ghost w-full mt-6 text-sm"><i data-lucide="log-out"></i>${S.mode === 'p2p' ? 'Sair da sala' : 'Trocar jogadores'}</button>
+      ${isGuest() ? '' : `<button data-ui="resetProfile" class="btn btn-ghost w-full mt-6 text-sm"><i data-lucide="eraser"></i>Zerar placar do casal</button>`}
+      <button data-ui="leave" class="btn btn-ghost w-full mt-3 text-sm"><i data-lucide="log-out"></i>${S.mode === 'p2p' ? 'Sair da sala' : 'Trocar jogadores'}</button>
     </main>`;
   },
 
@@ -1603,31 +1649,6 @@ Object.assign(VIEWS, {
       <div class="arena" style="min-height:320px">${pads('reflexTap', [`Toque, ${esc(S.names[0])}`, `Toque, ${esc(S.names[1])}`])}</div>`);
   },
 
-  know() {
-    const k = S.know;
-    if (k.phase === 'idle') return wrap('Quem Conhece Quem', startBtn('knowNew'));
-    const q = KNOW[k.deck[k.i]], rd = k.reader, gs = 1 - rd;
-    const head = `<section class="card p-5 mb-4 text-center">
-        <p class="eyebrow mb-2">${esc(S.names[rd])} responde sobre si mesmo(a)</p>
-        <h3 class="font-display text-2xl leading-snug">${esc(q.q)}</h3></section>`;
-    const opts = (type, who) => q.o.map((o, v) => `<button class="opt mb-3" ${ap(type, { v, who })}><span class="flex-1">${esc(o)}</span></button>`).join('');
-    let body;
-    if (k.phase === 'pick') body = canAct(rd) ? opts('knowPick', seatFor(rd)) : `<p class="muted text-center dots">Aguardando ${esc(S.names[rd])} escolher</p>`;
-    else if (k.phase === 'handoff') body = `<div class="card p-6 text-center fade-up">
-        <p class="font-display text-2xl mb-2">Passe o celular</p>
-        <p class="muted mb-5">${esc(S.names[gs])}, agora adivinhe a resposta de ${esc(S.names[rd])}.</p>
-        <button ${ap('knowReady')} class="btn btn-gold w-full">Pronto</button></div>`;
-    else if (k.phase === 'guess') body = canAct(gs)
-      ? `<p class="text-center text-sm mb-3 muted">${esc(S.names[gs])}, adivinhe a resposta de ${esc(S.names[rd])}:</p>` + opts('knowGuess', seatFor(gs))
-      : `<p class="muted text-center dots">Aguardando ${esc(S.names[gs])} adivinhar</p>`;
-    else body = `<div class="card p-5 fade-up">
-        <p class="text-sm muted mb-1">${esc(S.names[rd])} disse:</p><p class="font-semibold mb-3">${esc(q.o[k.pick])}</p>
-        <p class="text-sm muted mb-1">${esc(S.names[gs])} chutou:</p><p class="font-semibold">${esc(q.o[k.guess])}</p></div>
-        ${msgCard()}
-        <button ${ap('knowNext')} class="btn btn-primary w-full mt-5">Próxima pergunta <i data-lucide="arrow-right"></i></button>`;
-    return wrap('Quem Conhece Quem', head + body);
-  },
-
   draw() {
     const d = S.draw;
     if (d.phase === 'idle') return wrap('Desenhe e Adivinhe', startBtn('drawNew'));
@@ -1721,70 +1742,56 @@ Object.assign(VIEWS, {
     return wrap('Mímica Romântica', inner);
   },
 
-  cards() {
-    const c = S.cards;
-    if (c.phase === 'idle') return wrap('Sorte ou Desafio', startBtn('cardsNew'));
-    const tn = S.names[c.turn], mine = canAct(c.turn), sx = seatFor(c.turn);
-    let inner;
-    if (c.phase === 'draw') {
-      inner = `<section class="card p-6 text-center">
-          <i data-lucide="layers" class="mx-auto mb-3" style="width:40px;height:40px;color:#EBCB8B"></i>
-          <p class="font-display text-2xl mb-4">Vez de ${esc(tn)}</p>
-          ${mine ? `<button ${ap('cardDraw', { who: sx })} class="btn btn-primary w-full">Tirar uma carta</button>` : '<p class="dots muted">Aguardando</p>'}</section>`;
-    } else {
-      inner = mine
-        ? `<section class="card p-6 text-center fade-up"><p class="eyebrow mb-3">Carta para ${esc(tn)}</p>
-           <p class="font-display text-2xl leading-snug mb-5">${esc(CARDS[c.card])}</p>
-           <button ${ap('cardDo', { who: sx })} class="btn btn-gold w-full mb-3"><i data-lucide="check"></i>Cumpri! +5</button>
-           ${c.swapped ? '' : `<button ${ap('cardSwap', { who: sx })} class="btn btn-ghost w-full"><i data-lucide="shuffle"></i>Trocar carta (uma vez)</button>`}</section>`
-        : `<section class="card p-6 text-center"><p class="dots muted">${esc(tn)} está com uma carta</p></section>`;
-    }
-    return wrap('Sorte ou Desafio', inner + msgCard());
+  tower() {
+    const tw = S.tower;
+    if (tw.phase === 'idle') return wrap('Torre do Amor', startBtn('towerStart'));
+    const n = tw.stack.length - 1;
+    const body = tw.phase === 'over'
+      ? `<section class="card p-6 text-center fade-up"><p class="font-display text-3xl mb-1">${n} ${n === 1 ? 'bloco' : 'blocos'}</p>
+           <p class="muted text-sm mb-2">Recorde do casal: ${tw.best}</p>${msgCard()}</section>
+         <button ${ap('towerStart')} class="btn btn-primary w-full mt-4">Jogar de novo <i data-lucide="rotate-ccw"></i></button>`
+      : `<p class="text-center text-sm muted mb-3">Empilhem juntos! Toquem quando o bloco estiver sobre a torre.</p>
+         <div class="arena" style="min-height:360px" ${ptap('towerDrop')}><canvas id="towerCv" class="absolute inset-0 w-full h-full"></canvas></div>
+         <p class="text-center font-display text-2xl mt-3" style="color:#EBCB8B">${n}</p>`;
+    return wrap('Torre do Amor', body);
   },
 
-  mem() {
-    const m = S.mem;
-    if (m.phase === 'idle') return wrap('Quem Erra Menos', startBtn('memStart'));
-    let inner;
-    if (m.phase === 'show') {
-      inner = `<section class="card p-8 text-center fade-up"><p class="eyebrow mb-4">Memorize · ${m.idx + 1} de ${m.words.length}</p>
-        <p class="font-display text-5xl" style="color:#EBCB8B">${esc(m.words[m.idx] ?? '')}</p></section>`;
-    } else if (m.phase === 'recall') {
-      const w = S.mode === 'p2p' ? me : (m.ans[0] == null ? 0 : 1);
-      const can = S.mode === 'local' || m.ans[me] == null;
-      inner = `<section class="card p-5 mb-4 text-center"><p class="muted text-sm">Escreva as palavras que lembrar, separadas por vírgula.</p></section>`
-        + (can
-          ? `<p class="text-center text-sm mb-2">${esc(S.names[w])}, sua vez</p>
-             <textarea class="field" data-bind="draft" rows="3" placeholder="casa, praia, pizza..." style="padding-left:1rem">${esc(L.draft)}</textarea>
-             <button ${ap('memAnswer', { who: w })} data-draft class="btn btn-gold w-full mt-3">Enviar lembranças</button>`
-          : `<p class="muted text-center dots">Aguardando ${esc(partner())}</p>`);
-    } else {
-      inner = `<section class="card p-5 fade-up"><p class="font-display text-2xl text-center mb-3">${esc(S.names[0])} ${m.score[0]} × ${m.score[1]} ${esc(S.names[1])}</p>
-        <p class="muted text-sm text-center">Palavras: ${m.words.map(esc).join(', ')}</p>${msgCard()}</section>
-        <button ${ap('memStart')} class="btn btn-primary w-full mt-4">Jogar de novo <i data-lucide="rotate-ccw"></i></button>`;
-    }
-    return wrap('Quem Erra Menos', inner);
+  trail() {
+    const tr = S.trail;
+    if (tr.phase === 'idle') return wrap('Trilha do Amor', startBtn('trailStart'));
+    const cells = Array.from({ length: TRAIL_END + 1 }, (_, i) => {
+      const here = [0, 1].filter(p => tr.pos[p] === i)
+        .map(p => `<span style="color:${p === 0 ? '#F07A97' : '#EBCB8B'}">${p === 0 ? '♥' : '★'}</span>`).join('');
+      return `<div class="trail-cell ${TRAIL_SPECIAL[i] ? 'special' : ''}"><span class="muted">${i === TRAIL_END ? '♛' : i}</span><div class="leading-none h-4">${here}</div></div>`;
+    }).join('');
+    const mine = canAct(tr.turn);
+    const ctrl = tr.phase === 'over'
+      ? `<div class="card p-5 text-center fade-up mt-4"><p class="font-display text-2xl">${esc(S.names[tr.winner])} venceu!</p>${msgCard()}</div>
+         <button ${ap('trailStart')} class="btn btn-primary w-full mt-4">Nova trilha <i data-lucide="rotate-ccw"></i></button>`
+      : `<div class="card p-5 text-center mt-4">
+           <p class="muted mb-3">${mine ? `Vez de ${esc(S.names[tr.turn])}: rolar o dado` : `Aguardando ${esc(S.names[tr.turn])} rolar`}</p>
+           ${mine ? `<button ${ap('trailRoll', { who: seatFor(tr.turn) })} class="btn btn-gold w-full"><i data-lucide="dice-5"></i>Rolar o dado</button>` : ''}
+           ${msgCard()}</div>`;
+    return wrap('Trilha do Amor', `<div class="grid grid-cols-6 gap-1.5 text-center">${cells}</div>${ctrl}`);
   },
 
-  trip() {
-    const t = S.trip;
-    if (t.phase === 'idle') return wrap('Viagem a Dois', startBtn('tripStart'));
-    if (t.phase === 'end') return wrap('Viagem a Dois', `
-      <section class="card p-5 mb-4 fade-up"><p class="eyebrow mb-3">Sua viagem</p>
-        <ol class="space-y-2 text-sm pl-5" style="color:#F7D7D6;list-style:decimal">${t.log.map(l => `<li>${esc(l)}</li>`).join('')}</ol></section>
-      ${msgCard()}
-      <button ${ap('tripStart')} class="btn btn-primary w-full mt-4">Nova viagem <i data-lucide="rotate-ccw"></i></button>`);
-    const sc = TRIP[t.i];
-    const w = S.mode === 'p2p' ? me : (t.picks[0] == null ? 0 : 1);
-    const can = S.mode === 'local' || t.picks[me] == null;
-    return wrap('Viagem a Dois', `
-      <p class="eyebrow mb-2 text-center">Cena ${t.i + 1} de ${TRIP.length}</p>
-      <section class="card p-5 mb-4 text-center"><h3 class="font-display text-2xl leading-snug">${esc(sc.q)}</h3></section>
-      ${can
-        ? `<p class="text-center text-sm muted mb-3">Vez de ${esc(S.names[w])}</p>` + sc.o.map((o, v) => `<button class="opt mb-3" ${ap('tripPick', { v, who: w })}><span class="flex-1">${esc(o)}</span></button>`).join('')
-        : `<p class="muted text-center dots">Aguardando ${esc(partner())}</p>`}
-      ${msgCard()}`);
+  simon() {
+    const s = S.simon;
+    if (s.phase === 'idle') return wrap('Sequência do Coração', startBtn('simonStart'));
+    const pads = SIMON_COLORS.map((c, k) =>
+      `<button class="simon-pad" id="simon-${k}" style="background:${c};color:${c}" ${ptap('simonTap', { k })} aria-label="Cor ${k + 1}"></button>`).join('');
+    const status = s.phase === 'show' ? 'Observem a sequência...' : s.phase === 'input' ? 'Repitam a sequência, juntos!' : '';
+    const over = s.phase === 'over'
+      ? `<div class="card p-5 text-center fade-up mt-4">${msgCard()}</div>
+         <button ${ap('simonStart')} class="btn btn-primary w-full mt-4">Jogar de novo <i data-lucide="rotate-ccw"></i></button>`
+      : '';
+    return wrap('Sequência do Coração', `
+      <p class="text-center text-sm muted mb-4">${status}</p>
+      <div class="grid grid-cols-2 gap-4 max-w-[300px] mx-auto">${pads}</div>
+      <p class="text-center font-display text-2xl mt-4" style="color:#EBCB8B">${s.seq.length}</p>
+      ${over}`);
   }
+
 });
 
 function render() {
@@ -1807,6 +1814,7 @@ const UI = {
     store.set('n0', a); store.set('n1', b);
     S = freshState(); me = null;
     S.mode = 'local'; S.names = [a, b]; S.screen = 'menu';
+    toast(applyProfile(S.names) ? 'Bem-vindos de volta! O placar de vocês foi carregado.' : 'Novo casal criado. O placar ficará salvo neste aparelho.');
     SND.play('join');
     render();
   },
@@ -1828,6 +1836,14 @@ const UI = {
     const done = () => toast('Código copiado! Envie para seu par.');
     if (navigator.clipboard) navigator.clipboard.writeText(L.code).then(done, () => toast('Código: ' + L.code));
     else toast('Código: ' + L.code);
+  },
+  resetProfile() {
+    if (!confirm('Zerar o placar, os pontos e as estatísticas deste casal?')) return;
+    S.points = 0; S.sync = { got: 0, max: 0 }; S.plays = {};
+    Object.assign(S.quiz, { matches: 0, rounds: 0 });
+    Object.assign(S.ttt, { score: [0, 0], draws: 0 });
+    Object.assign(S.hs, { plays: 0, wins: 0, best: 0 });
+    saveProfile(); render(); toast('Placar zerado.');
   },
   cozy() { L.cozy = !L.cozy; store.set('cozy', L.cozy); render(); toast(L.cozy ? 'Modo aconchego ligado' : 'Modo aconchego desligado', 1500); },
   sound() { L.sound = !L.sound; store.set('sound', L.sound); if (L.sound) SND.play('select'); render(); },
